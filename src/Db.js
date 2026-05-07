@@ -7,5 +7,4 @@ const getWorkerPath = () => {
     }
 };
 const workerPath = getWorkerPath();
-console.log(import.meta.url)
 export const connection = new JsStore.Connection(new Worker(workerPath));

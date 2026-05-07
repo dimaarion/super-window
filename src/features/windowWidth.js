@@ -3,11 +3,11 @@ import { createSlice } from '@reduxjs/toolkit'
 export const windowWidth = createSlice({
     name:"width",
     initialState: {
-        value: 0,
+        value: 1500,
     },
     reducers:{
         setWindowWidth:(state,action)=>{
-            state.value = action.payload
+            state.value = Number.parseInt(action.payload) 
         }
     }
 
