@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import {useEffect, useState} from "react";
 
 export default function WindowConstructor({
                                               width = 1500, // Внешний параметр ширины
