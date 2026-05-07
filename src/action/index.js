@@ -48,3 +48,30 @@ export async function insertTable(tbName, value){
         values: [value],
     });
 }
+
+export const removeImpost = (targetId,setTree) => {
+    // Если пытаемся удалить корневой элемент, ничего не делаем
+    if (targetId === 'root') return;
+
+    const updateTree = (node) => {
+        // Если этот узел — тот самый split, который мы хотим удалить
+        if (node.id === targetId && node.type === 'split') {
+            return {
+                id: Math.random(),
+                type: 'glass'
+            };
+        }
+
+        // Если нет, идем глубже по дереву
+        if (node.type === 'split') {
+            return {
+                ...node,
+                child1: updateTree(node.child1),
+                child2: updateTree(node.child2)
+            };
+        }
+        return node;
+    };
+
+    setTree(prev => updateTree(prev));
+};

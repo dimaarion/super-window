@@ -4,7 +4,10 @@ import {windowHeight} from "./features/windowHeight.js";
 import {windowColor} from "./features/windowColor.js";
 import {profileHeight} from "./features/profileHeight.js";
 import {impostWidth} from "./features/impostWidth.js";
-import {impostConfigOpen} from "./features/ImpostConfigOpen.js";
+import {impostConfigOpen} from "./features/impostConfigOpen.js";
+import {impostPosition} from "./features/ImpostPosition.js";
+import {tree} from "./features/tree.js";
+import {node} from "./features/node.js";
 
 
 export default configureStore({
@@ -14,6 +17,10 @@ export default configureStore({
         windowColor:windowColor.reducer,
         profileHeight:profileHeight.reducer,
         impostWidth:impostWidth.reducer,
-        impostConfigOpen:impostConfigOpen.reducer
+        impostConfigOpen:impostConfigOpen.reducer,
+        impostPosition:impostPosition.reducer,
+        tree:tree.reducer,
+        node:node.reducer
+
     },
 })

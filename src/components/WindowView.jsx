@@ -1,212 +1,207 @@
-import {useEffect, useState} from "react";
+import {useState, useMemo, useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {setImpostConfigOpen} from "../features/impostConfigOpen.js";
+import {setImpostPosition} from "../features/ImpostPosition.js";
+import {setTree} from "../features/tree.js";
+import {setNode} from "../features/node.js";
 
-export default function WindowConstructor({
-                                              width = 1500, // Внешний параметр ширины
-                                              height = 1500, // Внешний параметр высоты
-                                              heightProfile = 60,
-                                              color = "#FFFFFF"
-                                          }) {
+/**
+ * WindowView - Компонент динамического чертежа окна.
+ * Позволяет делить сегменты и перемещать импосты по клику.
+ */
+export default function WindowView({
+                                       width = 1500,        // Ширина проема (мм)
+                                       height = 1500,       // Высота проема (мм)
+                                       heightProfile = 60,  // Ширина рамы (мм)
+                                       color = "#FFFFFF"    // Цвет профиля
+                                   }) {
+    const tree = useSelector(state => state.tree.value);
+    const dispatch = useDispatch()
     const hp = heightProfile;
-    const impostWidth = 60;
-    const minSize = 150;
+    const impostWidth = 60; // Ширина перегородки (импоста)
+    const minSize = 0;    // Минимально допустимый размер стеклопакета
 
-    // Инициализируем дерево при первом рендере или сбросе
-    const [tree, setTree] = useState({
-        id: 'root',
-        type: 'glass',
-        w: width,
-        h: height,
-        x: 0,
-        y: 0
-    });
+    // Состояние дерева сегментов.
+    // ratio - это положение импоста от 0 до 1 (процент от доступной площади)
 
-    // Эффект для обновления дерева при изменении внешних габаритов (пропорциональное масштабирование)
-    useEffect(() => {
-        const scaleTree = (node, newW, newH) => {
-            if (node.type === 'glass') {
-                return { ...node, w: newW, h: newH };
-            }
-            const isVert = node.splitType === 'vertical';
-            // Вычисляем коэффициент изменения для сохранения пропорций при ресайзе окна
-            const ratioW = newW / (node.child1.w + node.child2.w + impostWidth);
-            const ratioH = newH / (node.child1.h + node.child2.h + impostWidth);
 
-            const nextW1 = isVert ? node.child1.w * ratioW : newW;
-            const nextH1 = isVert ? newH : node.child1.h * ratioH;
-            const nextW2 = isVert ? node.child2.w * ratioW : newW;
-            const nextH2 = isVert ? newH : node.child2.h * ratioH;
+    /**
+     * Рекурсивный расчет координат и размеров.
+     * Применяет "предохранители" для ratio, чтобы импосты не уходили в ноль.
+     */
+    const calculateLayout = (node, x, y, w, h) => {
+        if (node.type === 'glass') {
+            return { ...node, x, y, w, h };
+        }
 
-            return {
-                ...node,
-                w: newW,
-                h: newH,
-                child1: scaleTree(node.child1, nextW1, nextH1),
-                child2: {
-                    ...scaleTree(node.child2, nextW2, nextH2),
-                    x: isVert ? node.x + nextW1 + impostWidth : node.x,
-                    y: isVert ? node.y : node.y + nextH1 + impostWidth
-                }
-            };
+        const isVert = node.splitType === 'vertical';
+        const totalAvailable = isVert ? (w - impostWidth) : (h - impostWidth);
+
+        // Ограничиваем ratio так, чтобы сегменты не были меньше minSize
+        const minRatio = minSize / totalAvailable;
+        const maxRatio = (totalAvailable - minSize) / totalAvailable;
+        const safeRatio = Math.max(minRatio, Math.min(node.ratio, maxRatio));
+
+        const size1 = totalAvailable * safeRatio;
+        const size2 = totalAvailable - size1;
+
+        const child1W = isVert ? size1 : w;
+        const child1H = isVert ? h : size1;
+        const child2W = isVert ? size2 : w;
+        const child2H = isVert ? h : size2;
+
+        const child2X = isVert ? x + size1 + impostWidth : x;
+        const child2Y = isVert ? y : y + size1 + impostWidth;
+
+        return {
+            ...node,
+            x, y, w, h,
+            child1: calculateLayout(node.child1, x, y, child1W, child1H),
+            child2: calculateLayout(node.child2, child2X, child2Y, child2W, child2H),
+            impX: isVert ? x + size1 : x,
+            impY: isVert ? y : y + size1
         };
-        setTree(prev => scaleTree(prev, width, height));
-    }, [width, height]);
-
-    const fullW = width + hp * 2;
-    const fullH = height + hp * 2;
-
-    // Логика перемещения и деления остается прежней, но использует динамические width/height
-    const moveImpost = (targetId, delta) => {
-        const updateTree = (node) => {
-            if (node.id === targetId && node.type === 'split') {
-                const isVert = node.splitType === 'vertical';
-                const nextW1 = isVert ? node.child1.w + delta : node.child1.w;
-                const nextH1 = isVert ? node.child1.h : node.child1.h + delta;
-                const nextW2 = isVert ? node.child2.w - delta : node.child2.w;
-                const nextH2 = isVert ? node.child2.h : node.child2.h - delta;
-
-                if (isVert ? (nextW1 < minSize || nextW2 < minSize) : (nextH1 < minSize || nextH2 < minSize)) return node;
-
-                return {
-                    ...node,
-                    child1: { ...node.child1, w: nextW1, h: nextH1 },
-                    child2: {
-                        ...node.child2, w: nextW2, h: nextH2,
-                        x: isVert ? node.x + nextW1 + impostWidth : node.x,
-                        y: isVert ? node.y : node.y + nextH1 + impostWidth
-                    }
-                };
-            }
-            return node.type === 'split' ? { ...node, child1: updateTree(node.child1), child2: updateTree(node.child2) } : node;
-        };
-        setTree(updateTree(tree));
     };
 
-    const splitSegment = (targetId, splitType) => {
+    // Вычисляем финальную геометрию на каждый рендер
+    const layoutTree = useMemo(() => calculateLayout(tree, 0, 0, width, height), [tree, width, height]);
+
+    // Обработка клика по импосту для его смещения
+    const handleImpostClick = (e, node) => {
+        e.stopPropagation();
+
+        const isVert = node.splitType === 'vertical';
+        const totalSpace = isVert ? (node.w - impostWidth) : (node.h - impostWidth);
+        const currentPx = Math.round(totalSpace * node.ratio);
+
+        dispatch(setImpostConfigOpen(true))
+        dispatch(setImpostPosition(currentPx))
+        dispatch(setNode(node))
+
+    };
+
+
+    // Разделение стекла на два сегмента
+    const splitSegment = (targetId) => {
+        const type = window.confirm("Разделить ВЕРТИКАЛЬНО? (Отмена — ГОРИЗОНТАЛЬНО)") ? 'vertical' : 'horizontal';
+
         const updateTree = (node) => {
             if (node.id === targetId) {
-                const isVert = splitType === 'vertical';
-                if (isVert && node.w < minSize * 2) return node;
-                if (!isVert && node.h < minSize * 2) return node;
-
-                const newW = isVert ? (node.w - impostWidth) / 2 : node.w;
-                const newH = isVert ? node.h : (node.h - impostWidth) / 2;
+                if (type === 'vertical' && node.w < minSize * 2 + impostWidth) return node;
+                if (type === 'horizontal' && node.h < minSize * 2 + impostWidth) return node;
 
                 return {
-                    ...node,
+                    id: Math.random(),
                     type: 'split',
-                    splitType,
-                    child1: { id: Math.random(), type: 'glass', w: newW, h: newH, x: node.x, y: node.y },
-                    child2: {
-                        id: Math.random(), type: 'glass', w: newW, h: newH,
-                        x: isVert ? node.x + newW + impostWidth : node.x,
-                        y: isVert ? node.y : node.y + newH + impostWidth
-                    }
+                    splitType: type,
+                    ratio: 0.5,
+                    child1: { id: Math.random(), type: 'glass' },
+                    child2: { id: Math.random(), type: 'glass' }
                 };
             }
             return node.type === 'split' ? { ...node, child1: updateTree(node.child1), child2: updateTree(node.child2) } : node;
         };
-        setTree(updateTree(tree));
+       dispatch(setTree(updateTree(tree))) ;
     };
 
-    const getDimensions = (type) => {
-        const sizes = [];
-        const collectGlass = (n) => {
-            if (n.type === 'glass') sizes.push({ x: n.x, y: n.y, w: n.w, h: n.h });
-            else { collectGlass(n.child1); collectGlass(n.child2); }
-        };
-        collectGlass(tree);
-
-        if (type === 'vertical') {
-            const xs = [...new Set(sizes.map(s => Math.round(s.x)))].sort((a, b) => a - b);
-            return xs.map((x, i) => {
-                const nextX = xs[i + 1] || width;
-                return { pos: x + (nextX - x) / 2, val: Math.round(nextX - x), start: x, end: nextX };
-            });
-        } else {
-            const ys = [...new Set(sizes.map(s => Math.round(s.y)))].sort((a, b) => a - b);
-            return ys.map((y, i) => {
-                const nextY = ys[i + 1] || height;
-                return { pos: y + (nextY - y) / 2, val: Math.round(nextY - y), start: y, end: nextY };
-            });
-        }
-    };
-
+    // Рекурсивный рендер элементов SVG
     const renderTree = (node) => {
         if (node.type === 'glass') {
             return (
                 <rect
                     key={node.id} x={hp + node.x} y={hp + node.y} width={node.w} height={node.h}
                     fill="#BAE6FD" fillOpacity="0.4" stroke="#94A3B8" strokeWidth="1"
-                    style={{ cursor: 'crosshair' }}
-                    onClick={() => splitSegment(node.id, window.confirm("Разделить ВЕРТИКАЛЬНО?") ? 'vertical' : 'horizontal')}
+                    className="cursor-crosshair hover:fill-sky-200 transition-colors"
+                    onClick={() => splitSegment(node.id)}
                 />
             );
         }
         const isVert = node.splitType === 'vertical';
-        const impX = hp + (isVert ? node.x + node.child1.w : node.x);
-        const impY = hp + (isVert ? node.y : node.y + node.child1.h);
 
         return (
             <g key={node.id}>
                 {renderTree(node.child1)}
                 {renderTree(node.child2)}
                 <rect
-                    x={impX} y={impY} width={isVert ? impostWidth : node.w} height={isVert ? node.h : impostWidth}
+                    x={hp + node.impX} y={hp + node.impY}
+                    width={isVert ? impostWidth : node.w}
+                    height={isVert ? node.h : impostWidth}
                     fill={color} stroke="#334155" strokeWidth="1"
-                    style={{ cursor: 'move' }}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        const step = 50;
-                        const delta = isVert ? (window.confirm("Сдвинуть ВПРАВО?") ? step : -step) : (window.confirm("Сдвинуть ВНИЗ?") ? step : -step);
-                        moveImpost(node.id, delta);
-                    }}
+                    className="cursor-move hover:brightness-95 transition-all"
+                    onClick={(e) => handleImpostClick(e, node)}
                 />
             </g>
         );
     };
 
-    const hDims = getDimensions('vertical');
-    const vDims = getDimensions('horizontal');
+    // Сбор размеров для отрисовки линеек
+    const getDimensions = (type) => {
+        const points = [];
+        const collect = (n) => {
+            if (n.type === 'glass') points.push({ x: n.x, y: n.y, w: n.w, h: n.h });
+            else { collect(n.child1); collect(n.child2); }
+        };
+        collect(layoutTree);
+
+        const axis = type === 'vertical' ? 'x' : 'y';
+        const sizeKey = type === 'vertical' ? 'w' : 'h';
+        const total = type === 'vertical' ? width : height;
+
+        const coords = [...new Set(points.map(p => Math.round(p[axis])))].sort((a, b) => a - b);
+        return coords.map((c, i) => {
+            const next = coords[i + 1] || total;
+            return { pos: c + (next - c) / 2, val: Math.round(next - c), start: c, end: next };
+        });
+    };
+
+    const fullW = width + hp * 2;
+    const fullH = height + hp * 2;
 
     return (
-        <svg
-            className="h-[400px] md:h-[750px] w-auto block mx-auto overflow-visible"
-            viewBox={`0 0 ${fullW + 200} ${fullH + 200}`}
-            fill="none" xmlns="http://www.w3.org/2000/svg"
-        >
-            {/* РАМА */}
-            <g fill={color} stroke="#334155" strokeWidth="2">
-                <polygon points={`0,0 ${fullW},0 ${fullW-hp},${hp} ${hp},${hp}`} />
-                <polygon points={`0,${fullH} ${fullW},${fullH} ${fullW-hp},${fullH-hp} ${hp},${fullH-hp}`} />
-                <polygon points={`0,0 ${hp},${hp} ${hp},${fullH-hp} 0,${fullH}`} />
-                <polygon points={`${fullW},0 ${fullW-hp},${hp} ${fullW-hp},${fullH-hp} ${fullW},${fullH}`} />
-            </g>
+        <div className="w-full flex flex-col items-center p-4 bg-slate-50 rounded-lg shadow-inner">
+            <svg
+                className="w-full max-h-[700px] overflow-visible"
+                viewBox={`0 0 ${fullW + 200} ${fullH + 200}`}
+                fill="none" xmlns="http://www.w3.org/2000/svg"
+            >
+                {/* Внешняя рама профиля */}
+                <g fill={color} stroke="#334155" strokeWidth="2">
+                    <path d={`M0,0 L${fullW},0 L${fullW-hp},${hp} L${hp},${hp} Z`} />
+                    <path d={`M0,${fullH} L${fullW},${fullH} L${fullW-hp},${fullH-hp} L${hp},${fullH-hp} Z`} />
+                    <path d={`M0,0 L${hp},${hp} L${hp},${fullH-hp} L0,${fullH} Z`} />
+                    <path d={`M${fullW},0 L${fullW-hp},${hp} L${fullW-hp},${fullH-hp} L${fullW},${fullH} Z`} />
+                </g>
 
-            {renderTree(tree)}
+                {/* Содержимое окна (стекла и импосты) */}
+                {renderTree(layoutTree)}
 
-            {/* РАЗМЕРЫ СЕГМЕНТОВ */}
-            <g fill="#475569" style={{ fontFamily: 'Inter, sans-serif', fontSize: '30px', fontWeight: '500' }}>
-                {hDims.map((d, i) => (
-                    <g key={i}>
-                        <line x1={hp + d.start} y1={fullH + 110} x2={hp + d.end} y2={fullH + 110} stroke="#94A3B8" strokeWidth="2" />
-                        <text x={hp + d.pos} y={fullH + 150} textAnchor="middle">{d.val}</text>
-                    </g>
-                ))}
-                {vDims.map((d, i) => (
-                    <g key={i}>
-                        <line x1={fullW + 110} y1={hp + d.start} x2={fullW + 110} y2={hp + d.end} stroke="#94A3B8" strokeWidth="2" />
-                        <text x={fullW + 150} y={hp + d.pos} textAnchor="middle" transform={`rotate(90, ${fullW + 150}, ${hp + d.pos})`}>{d.val}</text>
-                    </g>
-                ))}
-            </g>
+                {/* Выносные линии и размеры */}
+                <g fill="#64748b" style={{ fontSize: '24px', fontWeight: '500', fontFamily: 'monospace' }}>
+                    {getDimensions('vertical').map((d, i) => (
+                        <g key={i}>
+                            <line x1={hp + d.start} y1={fullH + 50} x2={hp + d.end} y2={fullH + 50} stroke="#cbd5e1" strokeWidth="2" />
+                            <text x={hp + d.pos} y={fullH + 90} textAnchor="middle">{d.val}</text>
+                        </g>
+                    ))}
+                    {getDimensions('horizontal').map((d, i) => (
+                        <g key={i}>
+                            <line x1={fullW + 50} y1={hp + d.start} x2={fullW + 50} y2={hp + d.end} stroke="#cbd5e1" strokeWidth="2" />
+                            <text x={fullW + 85} y={hp + d.pos} textAnchor="middle" transform={`rotate(90, ${fullW + 85}, ${hp + d.pos})`}>{d.val}</text>
+                        </g>
+                    ))}
+                </g>
 
-            {/* ОБЩИЕ ГАБАРИТЫ */}
-            <g fill="#000" style={{ fontFamily: 'Inter, sans-serif', fontSize: '40px', fontWeight: '700' }}>
-                <rect x="0" y={fullH + 30} width={fullW} height="4" />
-                <text x={fullW / 2} y={fullH + 80} textAnchor="middle">{width}</text>
-                <rect x={fullW + 30} y="0" width="4" height={fullH} />
-                <text x={fullW + 80} y={fullH / 2} textAnchor="middle" transform={`rotate(90, ${fullW + 80}, ${fullH / 2})`}>{height}</text>
-            </g>
-        </svg>
+                {/* Общие габариты */}
+                <g fill="#1e293b" style={{ fontSize: '32px', fontWeight: '700' }}>
+                    <text x={fullW / 2} y={fullH + 160} textAnchor="middle">Ширина: {width} мм</text>
+                    <text x={fullW + 160} y={fullH / 2} textAnchor="middle" transform={`rotate(90, ${fullW + 160}, ${fullH / 2})`}>Высота: {height} мм</text>
+                </g>
+            </svg>
+
+            <div className="mt-6 p-3 bg-white border border-slate-200 rounded text-sm text-slate-600">
+                <p>💡 <b>Клик по стеклу:</b> разделить на две части.</p>
+                <p>💡 <b>Клик по импосту:</b> задать точное смещение.</p>
+            </div>
+        </div>
     );
 }
