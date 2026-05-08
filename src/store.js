@@ -8,11 +8,14 @@ import {impostConfigOpen} from "./features/impostConfigOpen.js";
 import {impostPosition} from "./features/ImpostPosition.js";
 import {tree} from "./features/tree.js";
 import {node} from "./features/node.js";
+import {configListOpen} from "./features/configListOpen.js";
+import {impostId} from "./features/impostId.js";
+import {glassId} from "./features/glassId.js";
 
 
 export default configureStore({
     reducer: {
-      windowWidth:windowWidth.reducer,
+        windowWidth:windowWidth.reducer,
         windowHeight:windowHeight.reducer,
         windowColor:windowColor.reducer,
         profileHeight:profileHeight.reducer,
@@ -20,7 +23,10 @@ export default configureStore({
         impostConfigOpen:impostConfigOpen.reducer,
         impostPosition:impostPosition.reducer,
         tree:tree.reducer,
-        node:node.reducer
+        node:node.reducer,
+        configListOpen:configListOpen.reducer,
+        impostId:impostId.reducer,
+        glassId:glassId.reducer
 
     },
 })

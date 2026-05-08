@@ -1,0 +1,13 @@
+#separation:hover > #separation-item{
+display: block;
+}
+#separation-item{
+    display: none;
+    position: absolute;
+    left: 290px;
+    top: 0;
+    background: #fffbeb;
+    height: 100px;
+    width: 200px;
+
+}

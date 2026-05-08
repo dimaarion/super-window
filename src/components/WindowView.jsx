@@ -1,9 +1,12 @@
-import {useState, useMemo, useEffect} from "react";
+import {useMemo} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setImpostConfigOpen} from "../features/impostConfigOpen.js";
 import {setImpostPosition} from "../features/ImpostPosition.js";
-import {setTree} from "../features/tree.js";
 import {setNode} from "../features/node.js";
+import {setImpostId} from "../features/impostId.js";
+import {setConfigListOpen} from "../features/configListOpen.js";
+import Sash from "./Sash.jsx";
+import {setGlassId} from "../features/glassId.js";
 
 /**
  * WindowView - Компонент динамического чертежа окна.
@@ -20,7 +23,16 @@ export default function WindowView({
     const hp = heightProfile;
     const impostWidth = 60; // Ширина перегородки (импоста)
     const minSize = 0;    // Минимально допустимый размер стеклопакета
+    const BASE_WIDTH = 1500;
+    const BASE_FONT_SIZE = 50;
+    const MIN_FONT_SIZE = 20;
+    const MAX_FONT_SIZE = 60;
 
+// Расчет
+    const dynamicFontSize = Math.min(
+        MAX_FONT_SIZE,
+        Math.max(MIN_FONT_SIZE, ((width + height) / BASE_WIDTH) * BASE_FONT_SIZE)
+    );
     // Состояние дерева сегментов.
     // ratio - это положение импоста от 0 до 1 (процент от доступной площади)
 
@@ -83,55 +95,64 @@ export default function WindowView({
 
     // Разделение стекла на два сегмента
     const splitSegment = (targetId) => {
-        const type = window.confirm("Разделить ВЕРТИКАЛЬНО? (Отмена — ГОРИЗОНТАЛЬНО)") ? 'vertical' : 'horizontal';
-
-        const updateTree = (node) => {
-            if (node.id === targetId) {
-                if (type === 'vertical' && node.w < minSize * 2 + impostWidth) return node;
-                if (type === 'horizontal' && node.h < minSize * 2 + impostWidth) return node;
-
-                return {
-                    id: Math.random(),
-                    type: 'split',
-                    splitType: type,
-                    ratio: 0.5,
-                    child1: { id: Math.random(), type: 'glass' },
-                    child2: { id: Math.random(), type: 'glass' }
-                };
-            }
-            return node.type === 'split' ? { ...node, child1: updateTree(node.child1), child2: updateTree(node.child2) } : node;
-        };
-       dispatch(setTree(updateTree(tree))) ;
+        dispatch(setImpostId(targetId))
+        dispatch(setConfigListOpen(true))
     };
 
     // Рекурсивный рендер элементов SVG
     const renderTree = (node) => {
-        if (node.type === 'glass') {
+
+        if (node.type === 'split'){
+            const isVert = node.splitType === 'vertical';
             return (
-                <rect
-                    key={node.id} x={hp + node.x} y={hp + node.y} width={node.w} height={node.h}
-                    fill="#BAE6FD" fillOpacity="0.4" stroke="#94A3B8" strokeWidth="1"
-                    className="cursor-crosshair hover:fill-sky-200 transition-colors"
-                    onClick={() => splitSegment(node.id)}
-                />
+                <g key={node.id}>
+
+                    <rect
+                        x={hp + node.impX} y={hp + node.impY}
+                        width={isVert ? impostWidth : node.w}
+                        height={isVert ? node.h : impostWidth}
+                        fill={color} stroke="#334155" strokeWidth="1"
+                        className="cursor-move hover:brightness-95 transition-all"
+                        onClick={(e) => handleImpostClick(e, node)}
+                    />
+                    {renderTree(node.child1)}
+                    {renderTree(node.child2)}
+                </g>
             );
         }
-        const isVert = node.splitType === 'vertical';
 
-        return (
-            <g key={node.id}>
-                {renderTree(node.child1)}
-                {renderTree(node.child2)}
-                <rect
-                    x={hp + node.impX} y={hp + node.impY}
-                    width={isVert ? impostWidth : node.w}
-                    height={isVert ? node.h : impostWidth}
-                    fill={color} stroke="#334155" strokeWidth="1"
-                    className="cursor-move hover:brightness-95 transition-all"
-                    onClick={(e) => handleImpostClick(e, node)}
-                />
-            </g>
-        );
+
+        if (node.type === 'glass') {
+            const worldX = hp + node.x;
+            const worldY = hp + node.y;
+            return (
+                <g key={node.id}>
+                    {/* Базовое стекло / проем */}
+                    <rect
+                        x={worldX} y={worldY} width={node.w} height={node.h}
+                        fill="#BAE6FD" fillOpacity="0.2" stroke="#94A3B8" strokeWidth="1"
+                        className="cursor-pointer hover:fill-sky-100 transition-colors"
+                        onClick={() => {
+                            splitSegment(node.id)
+                            dispatch(setGlassId(node.id))
+                        }}
+                    />
+
+                    {/* Вставка створки как отдельного компонента */}
+                    {node.hasSash && (
+                        <Sash
+                            x={worldX}
+                            y={worldY}
+                            w={node.w}
+                            h={node.h}
+                            color={color}
+                        />
+                    )}
+                </g>
+            );
+        }
+
+
     };
 
     // Сбор размеров для отрисовки линеек
@@ -176,25 +197,25 @@ export default function WindowView({
                 {renderTree(layoutTree)}
 
                 {/* Выносные линии и размеры */}
-                <g fill="#64748b" style={{ fontSize: '24px', fontWeight: '500', fontFamily: 'monospace' }}>
+                <g fill="#64748b" style={{ fontSize: `${dynamicFontSize}px`, fontWeight: '500', fontFamily: 'monospace' }}>
                     {getDimensions('vertical').map((d, i) => (
                         <g key={i}>
                             <line x1={hp + d.start} y1={fullH + 50} x2={hp + d.end} y2={fullH + 50} stroke="#cbd5e1" strokeWidth="2" />
-                            <text x={hp + d.pos} y={fullH + 90} textAnchor="middle">{d.val}</text>
+                            <text  x={hp + d.pos} y={fullH + 90} textAnchor="middle">{d.val}</text>
                         </g>
                     ))}
                     {getDimensions('horizontal').map((d, i) => (
                         <g key={i}>
                             <line x1={fullW + 50} y1={hp + d.start} x2={fullW + 50} y2={hp + d.end} stroke="#cbd5e1" strokeWidth="2" />
-                            <text x={fullW + 85} y={hp + d.pos} textAnchor="middle" transform={`rotate(90, ${fullW + 85}, ${hp + d.pos})`}>{d.val}</text>
+                            <text  x={fullW + 85} y={hp + d.pos} textAnchor="middle" transform={`rotate(90, ${fullW + 85}, ${hp + d.pos})`}>{d.val}</text>
                         </g>
                     ))}
                 </g>
 
                 {/* Общие габариты */}
-                <g fill="#1e293b" style={{ fontSize: '32px', fontWeight: '700' }}>
-                    <text x={fullW / 2} y={fullH + 160} textAnchor="middle">Ширина: {width} мм</text>
-                    <text x={fullW + 160} y={fullH / 2} textAnchor="middle" transform={`rotate(90, ${fullW + 160}, ${fullH / 2})`}>Высота: {height} мм</text>
+                <g fill="#1e293b" style={{ fontSize: `${dynamicFontSize}px`, fontWeight: '700' }}>
+                    <text  x={fullW / 2} y={fullH + 160} textAnchor="middle">Ширина: {width} мм</text>
+                    <text  x={fullW + 160} y={fullH / 2} textAnchor="middle" transform={`rotate(90, ${fullW + 160}, ${fullH / 2})`}>Высота: {height} мм</text>
                 </g>
             </svg>
 

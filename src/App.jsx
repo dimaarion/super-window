@@ -7,6 +7,7 @@ import {createBase, createTableColors, insertTable} from "./action/index.js";
 import ColorSelect from "./components/ColorSelect.jsx";
 import {setWindowHeight} from "./features/windowHeight.js";
 import ImpostConfig from "./components/ImpostConfig.jsx";
+import ConfigList from "./components/ConfigList.jsx";
 
 
 await createBase()
@@ -18,6 +19,7 @@ function App() {
     const profileHeight = useSelector((state) => state.profileHeight.value);
     const impostWidth = useSelector((state) => state.impostWidth.value);
     const impostOpen = useSelector(state => state.impostConfigOpen.value);
+    const configOpen = useSelector(state => state.configListOpen.value);
 
     useEffect(() => {
 
@@ -65,6 +67,9 @@ function App() {
           </article>
           <div>
               {impostOpen?<ImpostConfig/>:""}
+          </div>
+          <div>
+              {configOpen?<ConfigList/>:""}
           </div>
       </>
   )
