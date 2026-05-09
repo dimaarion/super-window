@@ -39,9 +39,27 @@ export default function ConfigList() {
         };
         dispatch(setTree(update(tree)))
     }
+
+    const checkSashStatus = (node, targetId) => {
+        // Если дошли до стекла — проверяем ID
+        if (node.type === 'glass') {
+            return node.id === targetId ? node.hasSash : null;
+        }
+
+        // Если это узел разделения — ищем в детях
+        if (node.type === 'split') {
+            const result1 = checkSashStatus(node.child1, targetId);
+            if (result1 !== null) return result1;
+
+            const result2 = checkSashStatus(node.child2, targetId);
+            if (result2 !== null) return result2;
+        }
+
+        return null;
+    };
 console.log(tree)
     return <div className={"bg-amber-50 w-[300px] h-[500px] m-auto  absolute top-0 bottom-0 right-0 left-0"}>
-        <div id={"separation"} className={"p-2 flex gap-2 hover:bg-blue-300 cursor-pointer justify-between"}>
+        <div id={"separation"} className={"p-2 flex gap-2 hover:bg-blue-300 cursor-pointer justify-between border-b-2"}>
             <div>
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g>
@@ -62,7 +80,7 @@ console.log(tree)
                 <div onClick={()=>{
                     createImpost("vertical")
                     dispatch(setConfigListOpen(false))
-                }} className={"flex gap-2 justify-start p-2 hover:bg-blue-300"}>
+                }} className={"flex gap-2 justify-start p-2 hover:bg-blue-300 border-b-2"}>
                     <div>
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g>
@@ -78,7 +96,7 @@ console.log(tree)
                 <div onClick={()=>{
                     createImpost("horizontal")
                     dispatch(setConfigListOpen(false))
-                }} className={"flex gap-2 justify-start p-2 hover:bg-blue-300"}>
+                }} className={"flex gap-2 justify-start p-2 hover:bg-blue-300 border-b-2"}>
                     <div>
                         <svg width="30.5" height="30" viewBox="0 0 30.5 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g>
@@ -94,10 +112,7 @@ console.log(tree)
 
             </div>
         </div>
-        <div onClick={()=>{
-            dispatch(setConfigListOpen(false))
-            createSash()
-        }} id={"sash"} className={"p-2 flex gap-2 hover:bg-blue-300 cursor-pointer justify-between"}>
+        <div  id={"sash"} className={"p-2 flex gap-2 hover:bg-blue-300 cursor-pointer justify-between border-b-2 "}>
             <div>
 
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -110,12 +125,72 @@ console.log(tree)
                     </g>
                 </svg>
             </div>
-            <div className={"self-center text-start"}>
-                {tree.hasSash?"Удалить створку":"Новая створка"}
+            <div onClick={()=>{
+                dispatch(setConfigListOpen(false))
+                createSash()
+            }} className={"self-center text-start"}>
+                {checkSashStatus(tree,glassId)?"Удалить створку":"Новая створка"}
             </div>
-            <div className={"rotate-270 w-5"}>
+            <div className={"rotate-270"}>
+                <svg width="18.335" height="11.852" viewBox="0 0 18.335 11.852" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.16772 0L18.3354 11.8517L0 11.8517L9.16772 0Z" fill="#000000" fillRule="evenodd" transform="matrix(1 0 -0 -1 -0 11.852)" />
+                </svg>
+            </div>
+            <div id={"sash-item"}>
+                <div id={"furniture"} className={"flex gap-2 h-[48px] justify-between p-2 hover:bg-blue-300 border-b-2"}>
+                    <div className={"self-center"}>
+                       Фурнитура
+                    </div>
+                    <div className={"rotate-270"}>
+                        <svg width="18.335" height="11.852" viewBox="0 0 18.335 11.852" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.16772 0L18.3354 11.8517L0 11.8517L9.16772 0Z" fill="#000000" fillRule="evenodd" transform="matrix(1 0 -0 -1 -0 11.852)" />
+                        </svg>
+                    </div>
+                    <div id={"furniture-item"} >
+                        <div className={"flex justify-start h-[48px] hover:bg-blue-300 border-b-2"}>
+                            <label className={"flex gap-2 px-2 cursor-pointer"}>
+                                <div className={"self-center flex"}>
+                                    <input  type={"checkbox"}/>
+                                </div>
+                                <div  className={"self-center"}>MACO</div>
+
+                            </label>
+
+                        </div>
+                    </div>
+                </div>
+                <div id={"direction"}  className={"flex gap-2 justify-between  hover:bg-blue-300 border-b-2"}>
+                    <div className={"self-center px-2"}>
+                        Направление открывания
+                    </div>
+                    <div className={"rotate-270"}>
+                        <svg width="18.335" height="11.852" viewBox="0 0 18.335 11.852" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.16772 0L18.3354 11.8517L0 11.8517L9.16772 0Z" fill="#000000" fillRule="evenodd" transform="matrix(1 0 -0 -1 -0 11.852)" />
+                        </svg>
+                    </div>
+                    <div id={"direction-item"}  >
+                        <div className={"flex gap-2 justify-between h-[50px] hover:bg-blue-300 border-b-2"}>
+                            <div className={"self-center px-2"}>
+                                Справа
+                            </div>
+                        </div>
+                        <div className={"flex gap-2 justify-between h-[50px] hover:bg-blue-300 border-b-2"}>
+                            <div className={"self-center px-2"}>
+                                Слева
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
+        </div>
+        <div onClick={()=>{
+            dispatch(setConfigListOpen(false))
+        }} className={"absolute m-auto right-2 bottom-2 w-[100px] h-[50px] flex justify-center cursor-pointer bg-blue-300 hover:bg-blue-400"}>
+            <div className={"flex self-center"}>
+                Закрыть
+            </div>
+
         </div>
     </div>
 }

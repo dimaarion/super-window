@@ -7,6 +7,7 @@ import {setImpostId} from "../features/impostId.js";
 import {setConfigListOpen} from "../features/configListOpen.js";
 import Sash from "./Sash.jsx";
 import {setGlassId} from "../features/glassId.js";
+import DragGuide from "./DragGuide.jsx";
 
 /**
  * WindowView - Компонент динамического чертежа окна.
@@ -16,18 +17,20 @@ export default function WindowView({
                                        width = 1500,        // Ширина проема (мм)
                                        height = 1500,       // Высота проема (мм)
                                        heightProfile = 60,  // Ширина рамы (мм)
-                                       color = "#FFFFFF"    // Цвет профиля
+                                       color = "#FFFFFF",
+                                       impostWidth = 120
+                                       // Цвет профиля
                                    }) {
     const tree = useSelector(state => state.tree.value);
+    const impostOpen = useSelector(state => state.impostConfigOpen.value);
     const dispatch = useDispatch()
     const hp = heightProfile;
-    const impostWidth = 60; // Ширина перегородки (импоста)
     const minSize = 0;    // Минимально допустимый размер стеклопакета
     const BASE_WIDTH = 1500;
     const BASE_FONT_SIZE = 50;
     const MIN_FONT_SIZE = 20;
     const MAX_FONT_SIZE = 60;
-
+    const offset = 120;
 // Расчет
     const dynamicFontSize = Math.min(
         MAX_FONT_SIZE,
@@ -54,7 +57,7 @@ export default function WindowView({
         const maxRatio = (totalAvailable - minSize) / totalAvailable;
         const safeRatio = Math.max(minRatio, Math.min(node.ratio, maxRatio));
 
-        const size1 = totalAvailable * safeRatio;
+        const size1 = totalAvailable * safeRatio ;
         const size2 = totalAvailable - size1;
 
         const child1W = isVert ? size1 : w;
@@ -109,8 +112,8 @@ export default function WindowView({
 
                     <rect
                         x={hp + node.impX} y={hp + node.impY}
-                        width={isVert ? impostWidth : node.w}
-                        height={isVert ? node.h : impostWidth}
+                        width={isVert ? impostWidth : Math.max(0, node.w)}
+                        height={isVert ? Math.max(0, node.h): impostWidth}
                         fill={color} stroke="#334155" strokeWidth="1"
                         className="cursor-move hover:brightness-95 transition-all"
                         onClick={(e) => handleImpostClick(e, node)}
@@ -129,7 +132,7 @@ export default function WindowView({
                 <g key={node.id}>
                     {/* Базовое стекло / проем */}
                     <rect
-                        x={worldX} y={worldY} width={node.w} height={node.h}
+                        x={worldX} y={worldY} width={Math.max(0, node.w)} height={Math.max(0, node.h)}
                         fill="#BAE6FD" fillOpacity="0.2" stroke="#94A3B8" strokeWidth="1"
                         className="cursor-pointer hover:fill-sky-100 transition-colors"
                         onClick={() => {
@@ -143,11 +146,13 @@ export default function WindowView({
                         <Sash
                             x={worldX}
                             y={worldY}
-                            w={node.w}
-                            h={node.h}
+                            w={Math.max(0, node.w)}
+                            h={Math.max(0, node.h)}
                             color={color}
                         />
                     )}
+
+
                 </g>
             );
         }
@@ -159,20 +164,61 @@ export default function WindowView({
     const getDimensions = (type) => {
         const points = [];
         const collect = (n) => {
-            if (n.type === 'glass') points.push({ x: n.x, y: n.y, w: n.w, h: n.h });
-            else { collect(n.child1); collect(n.child2); }
+            if (n.type === 'glass') {
+                points.push({ x: n.x, y: n.y, w: n.w, h: n.h });
+            } else {
+                collect(n.child1);
+                collect(n.child2);
+            }
         };
         collect(layoutTree);
 
-        const axis = type === 'vertical' ? 'x' : 'y';
-        const sizeKey = type === 'vertical' ? 'w' : 'h';
-        const total = type === 'vertical' ? width : height;
+        const axis = type === 'vertical' ? 'y' : 'x'; // для верт. размеров смотрим Y, для гор. — X
+        const total = type === 'vertical' ? height : width;
 
-        const coords = [...new Set(points.map(p => Math.round(p[axis])))].sort((a, b) => a - b);
-        return coords.map((c, i) => {
-            const next = coords[i + 1] || total;
-            return { pos: c + (next - c) / 2, val: Math.round(next - c), start: c, end: next };
+        // Собираем все уникальные координаты начала и КОНЦА каждого проема
+        // Это важно, чтобы знать, где проем закончился, а где начался импост
+        const coords = [];
+        points.forEach(p => {
+            if (type === 'vertical') {
+                coords.push(Math.round(p.y));
+                coords.push(Math.round(p.y + p.h));
+            } else {
+                coords.push(Math.round(p.x));
+                coords.push(Math.round(p.x + p.w));
+            }
         });
+
+        // Оставляем только уникальные точки и сортируем их
+        const uniqueCoords = [...new Set(coords)].sort((a, b) => a - b);
+
+        const results = [];
+        for (let i = 0; i < uniqueCoords.length - 1; i++) {
+            const start = uniqueCoords[i];
+            const end = uniqueCoords[i + 1];
+            const distance = end - start;
+
+            if (distance <= impostWidth + 2) continue;
+
+            // Проверяем, является ли этот отрезок крайним
+            const isFirst = i === 0;
+            const isLast = i === uniqueCoords.length - 2;
+
+            // Вычитаем hp из значения, если это крайний элемент
+            // (Например, если размер должен показывать расстояние до импоста БЕЗ рамы)
+            let val = distance;
+            if (isFirst) val -= hp;
+            if (isLast) val -= hp;
+
+            results.push({
+                pos: start + distance / 2,
+                val: Math.round(val),
+                start: start,
+                end: end
+            });
+        }
+
+        return results;
     };
 
     const fullW = width + hp * 2;
@@ -198,25 +244,96 @@ export default function WindowView({
 
                 {/* Выносные линии и размеры */}
                 <g fill="#64748b" style={{ fontSize: `${dynamicFontSize}px`, fontWeight: '500', fontFamily: 'monospace' }}>
-                    {getDimensions('vertical').map((d, i) => (
-                        <g key={i}>
-                            <line x1={hp + d.start} y1={fullH + 50} x2={hp + d.end} y2={fullH + 50} stroke="#cbd5e1" strokeWidth="2" />
-                            <text  x={hp + d.pos} y={fullH + 90} textAnchor="middle">{d.val}</text>
-                        </g>
-                    ))}
-                    {getDimensions('horizontal').map((d, i) => (
-                        <g key={i}>
-                            <line x1={fullW + 50} y1={hp + d.start} x2={fullW + 50} y2={hp + d.end} stroke="#cbd5e1" strokeWidth="2" />
-                            <text  x={fullW + 85} y={hp + d.pos} textAnchor="middle" transform={`rotate(90, ${fullW + 85}, ${hp + d.pos})`}>{d.val}</text>
-                        </g>
-                    ))}
+                    <g className="dimensions-bottom">
+                        {getDimensions('horizontal').map((d, i) => {
+                            const xStart = hp + d.start;
+                            const xEnd = hp + d.end;
+                            const yPos = hp + height + offset;
+
+                            return (
+                                <g key={i}>
+                                    {/* Размерная линия (горизонтальная) */}
+                                    <line x1={xStart} y1={yPos} x2={xEnd} y2={yPos} stroke="#64748b" strokeWidth="1" />
+
+                                    {/* Засечки (диагональные штрихи) */}
+                                    <line x1={xStart - 4} y1={yPos + 4} x2={xStart + 4} y2={yPos - 4} stroke="#475569" strokeWidth="2" />
+                                    <line x1={xEnd - 4} y1={yPos + 4} x2={xEnd + 4} y2={yPos - 4} stroke="#475569" strokeWidth="2" />
+
+                                    {/* Текст размера */}
+                                    <text
+                                        x={hp + d.pos}
+                                        y={yPos - 8}
+                                        textAnchor="middle"
+                                        style={{
+                                            fontSize: `${Math.max(14, (width + height) / 60)}px`,
+                                            fill: '#334155', fontWeight: '600' }}
+                                    >
+                                        {d.val}
+                                    </text>
+                                </g>
+                            );
+                        })}
+
+                    </g>
+
+                    {/* Вертикальные размеры слева */}
+                    <g className="dimensions-right">
+                        {getDimensions('vertical').map((d, i) => {
+                            const yStart = hp + d.start;
+                            const yEnd = hp + d.end;
+                            const xPos = hp + width + offset;
+
+                            return (
+                                <g key={i}>
+                                    {/* Размерная линия (вертикальная) */}
+                                    <line x1={xPos} y1={yStart} x2={xPos} y2={yEnd} stroke="#64748b" strokeWidth="1" />
+
+                                    {/* Засечки */}
+                                    <line x1={xPos - 4} y1={yStart + 4} x2={xPos + 4} y2={yStart - 4} stroke="#475569" strokeWidth="2" />
+                                    <line x1={xPos - 4} y1={yEnd + 4} x2={xPos + 4} y2={yEnd - 4} stroke="#475569" strokeWidth="2" />
+
+                                    {/* Текст размера, повернутый на 90 градусов */}
+                                    <text
+                                        x={xPos} // Смещение вправо от линии, чтобы текст не лежал на ней
+                                        y={d.pos + 90}
+                                        textAnchor="middle" // Центрируем по "длине" текста после поворота
+                                        dominantBaseline="hanging" // Чтобы текст "свисал" от точки вправо
+                                        transform={`rotate(90, ${xPos + 15}, ${hp + d.pos})`} // Поворот вокруг собственной точки
+                                        style={{
+                                            fontSize: `${Math.max(14, (width + height) / 60)}px`,
+                                            fill: '#334155',
+                                            fontWeight: '600'
+                                        }}
+                                    >
+                                        {d.val}
+                                    </text>
+                                </g>
+                            );
+                        })}
+                    </g>
                 </g>
 
                 {/* Общие габариты */}
                 <g fill="#1e293b" style={{ fontSize: `${dynamicFontSize}px`, fontWeight: '700' }}>
-                    <text  x={fullW / 2} y={fullH + 160} textAnchor="middle">Ширина: {width} мм</text>
-                    <text  x={fullW + 160} y={fullH / 2} textAnchor="middle" transform={`rotate(90, ${fullW + 160}, ${fullH / 2})`}>Высота: {height} мм</text>
+                    <text style={{
+                        fontSize: `${Math.max(14, (width + height) / 60)}px`,
+                        fill: '#334155',
+                        fontWeight: '600'
+                    }}  x={fullW / 2} y={fullH + 160} textAnchor="middle">Ширина: {width} мм</text>
+                    <text style={{
+                        fontSize: `${Math.max(14, (width + height) / 60)}px`,
+                        fill: '#334155',
+                        fontWeight: '600'
+                    }} x={fullW + 160} y={fullH / 2} textAnchor="middle" transform={`rotate(90, ${fullW + 160}, ${fullH / 2})`}>Высота: {height} мм</text>
                 </g>
+
+                {impostOpen && (
+                    <DragGuide
+                        width={width}
+                        height={height}
+                        hp={hp}
+                    />
+                )}
             </svg>
 
             <div className="mt-6 p-3 bg-white border border-slate-200 rounded text-sm text-slate-600">

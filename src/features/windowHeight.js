@@ -7,7 +7,7 @@ export const windowHeight = createSlice({
     },
     reducers:{
         setWindowHeight:(state,action)=>{
-            state.value = Number.parseInt(action.payload)
+            state.value = action.payload < 200?200:Number.parseInt(action.payload)
         }
     }
 

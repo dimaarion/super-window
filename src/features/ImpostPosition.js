@@ -7,7 +7,7 @@ export const impostPosition = createSlice({
     },
     reducers:{
         setImpostPosition:(state,action)=>{
-            state.value = action.payload
+            state.value = Number.parseInt(action.payload)
         }
     }
 

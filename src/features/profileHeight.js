@@ -7,7 +7,7 @@ export const profileHeight = createSlice({
     },
     reducers:{
         setProfileHeight:(state,action)=>{
-            state.value = action.payload
+            state.value = Number.parseInt(action.payload)
         }
     }
 

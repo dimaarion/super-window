@@ -40,17 +40,17 @@ function App() {
               </div>
               <div className={"border-2 border-gray-600 w-full sm:w-1/2 "}>
                   <div className={"justify-center flex"}>
-                      <WindowView impostX={50} impostWidth={impostWidth} width={windowWidth} height={windowHeight} heightProfile={profileHeight} color={windowColor}  />
+                      <WindowView  impostWidth={impostWidth} width={windowWidth} height={windowHeight} heightProfile={profileHeight} color={windowColor}  />
                   </div>
                   <div className={"flex-wrap lg:flex justify-center"}>
                      <div className={"p-2"}>
-                         <input placeholder={'1500'} onChange={(e)=>{
+                         <input min={200} placeholder={'1500'} onChange={(e)=>{
                              dispatch(setWindowWidth(e.target.value))
                          }} className={"bg-amber-50 p-2"} type={"number"} />
                          <div className={"text-start lg:text-center"}>Ширина</div>
                      </div>
                       <div className={"p-2"}>
-                          <input placeholder={'1500'} onChange={(e)=>{
+                          <input min={200} placeholder={'1500'} onChange={(e)=>{
                               dispatch(setWindowHeight(e.target.value))
                           }} className={"bg-amber-50 p-2"} type={"number"} />
                           <div className={"text-start lg:text-center"}>Высота</div>
@@ -66,7 +66,7 @@ function App() {
               </div>
           </article>
           <div>
-              {impostOpen?<ImpostConfig/>:""}
+              {impostOpen?<ImpostConfig impostWidth={impostWidth}/>:""}
           </div>
           <div>
               {configOpen?<ConfigList/>:""}

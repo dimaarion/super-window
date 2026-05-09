@@ -3,11 +3,11 @@ import { createSlice } from '@reduxjs/toolkit'
 export const impostWidth = createSlice({
     name:"profileHeight",
     initialState: {
-        value: 60,
+        value: 80,
     },
     reducers:{
         setImpostWidth:(state,action)=>{
-            state.value = action.payload
+            state.value = Number.parseInt(action.payload)
         }
     }
 

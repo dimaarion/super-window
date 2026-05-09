@@ -1,7 +1,7 @@
 const Sash = ({
                   x, y, w, h,
                   color = "#FFFFFF",
-                  overlap = 8,
+                  overlap = 24,
                   sashWidth = 65,
                   openSide = 'left'
               }) => {
