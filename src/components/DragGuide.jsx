@@ -1,14 +1,11 @@
 import {useSelector} from "react-redux";
 
-const DragGuide = ({width, height, hp }) => {
-    const offset = 45; // На каком расстоянии от рамы рисовать линии
-
+const DragGuide = () => {
     const currentX = useSelector((state)=>state.impostPosition.value)
-    const currentY = useSelector((state)=>state.impostPosition.value)
     const profileHeight = useSelector((state) => state.profileHeight.value);
     const node = useSelector(state => state.node.value);
     const type = node.splitType
-console.log(currentX + profileHeight)
+
     return (
         <g style={{ pointerEvents: 'none' }}>
             {/* 1. ГОРИЗОНТАЛЬНАЯ ЛИНИЯ (Снизу) */}

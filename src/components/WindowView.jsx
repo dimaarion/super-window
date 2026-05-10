@@ -149,6 +149,7 @@ export default function WindowView({
                             w={Math.max(0, node.w)}
                             h={Math.max(0, node.h)}
                             color={color}
+                            openSide={node?.dir}
                         />
                     )}
 
@@ -335,11 +336,6 @@ export default function WindowView({
                     />
                 )}
             </svg>
-
-            <div className="mt-6 p-3 bg-white border border-slate-200 rounded text-sm text-slate-600">
-                <p>💡 <b>Клик по стеклу:</b> разделить на две части.</p>
-                <p>💡 <b>Клик по импосту:</b> задать точное смещение.</p>
-            </div>
         </div>
     );
 }

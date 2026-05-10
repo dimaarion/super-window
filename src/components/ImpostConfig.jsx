@@ -7,7 +7,6 @@ export default function ImpostConfig({impostWidth = 120}){
     const position = useSelector((state)=>state.impostPosition.value)
     const tree = useSelector(state => state.tree.value);
     const node = useSelector(state => state.node.value);
-    const profileHeight = useSelector((state) => state.profileHeight.value);
     const dispatch = useDispatch()
     return (
         <div className={"fixed top-0 left-0 right-0 bottom-0 w-[400px] h-[200px] m-auto bg-white"}>

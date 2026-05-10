@@ -7,7 +7,6 @@ export default function ColorSelect(){
     const [colors, setColors] = useState([{}]);
     useEffect(() => {
 
-///insertTable("Colors",{name:"Белый",color: "#ffffff"});
         connection.select({
             from: "Colors"
         }).then((result) => {

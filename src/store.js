@@ -11,6 +11,8 @@ import {node} from "./features/node.js";
 import {configListOpen} from "./features/configListOpen.js";
 import {impostId} from "./features/impostId.js";
 import {glassId} from "./features/glassId.js";
+import {sashDirection} from "./features/sashDirection.js";
+import {page} from "./features/page.js";
 
 
 export default configureStore({
@@ -26,7 +28,9 @@ export default configureStore({
         node:node.reducer,
         configListOpen:configListOpen.reducer,
         impostId:impostId.reducer,
-        glassId:glassId.reducer
+        glassId:glassId.reducer,
+        sashDirection:sashDirection.reducer,
+        page:page.reducer
 
     },
 })

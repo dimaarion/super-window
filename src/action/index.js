@@ -1,11 +1,12 @@
 import {connection} from "../Db.js";
 
-export async function createBase(name) {
+export async function createBase(name,v = 1) {
     const tbColors = {
         name: "Colors",
         columns: {
             id: { primaryKey: true, autoIncrement: true },
             name: { dataType: "string"},
+            type: { dataType: "string"},
             color: { dataType: "string" },
         }
     };
@@ -13,16 +14,23 @@ export async function createBase(name) {
         name: "Accessories",
         columns: {
             id: { primaryKey: true, autoIncrement: true },
-            article: { dataType: "string", notNull: true },    // Артикул (уникальный код детали)
-            name: { dataType: "string", notNull: true },       // Название (ручка, замок, петля)
-            category: { dataType: "string" },                  // Категория (фурнитура, крепёж, уплотнитель)
-            unit: { dataType: "string" },                      // Единица измерения (шт., комплект, м)
-            price: { dataType: "number", notNull: true },      // Цена за единицу
-            manufacturer: { dataType: "string" }               // Производитель
+            article: { dataType: "string", notNull: true },
+            name: { dataType: "string", notNull: true },
+            width: { dataType: "number", default: 0 },
+            dearth: { dataType: "number", default: 0 },
+            grooveOffset: { dataType: "number", default: 0 },
+            unit: { dataType: "string" },
+            noColor: { dataType: "number",  default: 0 },
+            white: { dataType: "number",  default: 0 },
+            both_sides: { dataType: "number",  default: 0 },
+            outside: { dataType: "number",  default: 0 },
+            inside: { dataType: "number",  default: 0 },
+            manufacturer: { dataType: "string" }
         }
     };
     let db = {
-        name: "CALCULATOR",
+        name: name,
+        version: v,
         tables: [tblAccessories,tbColors]
     }
 
@@ -31,16 +39,15 @@ export async function createBase(name) {
 }
 
 
-export  function createTableColors(){
-   return  {
-        name: "colors",
-        columns: {
-            id: { primaryKey: true, autoIncrement: true },
-            name: { dataType: "string", notNull: true },       // Название (ручка, замок, петля)
-            color: { dataType: "string" ,notNull:true},                  // Категория (фурнитура, крепёж, уплотнитель)
-        }
-    };
+export async function deleteDatabase() {
+    try {
+        await connection.dropDb();
+        console.log("База данных успешно удалена");
+    } catch (ex) {
+        console.error("Ошибка при удалении базы:", ex);
+    }
 }
+
 
 export async function insertTable(tbName, value){
      await connection.insert({
@@ -49,29 +56,9 @@ export async function insertTable(tbName, value){
     });
 }
 
-export const removeImpost = (targetId,setTree) => {
-    // Если пытаемся удалить корневой элемент, ничего не делаем
-    if (targetId === 'root') return;
+export async function select(tbName){
+   return  await connection.select({
+       from: tbName
+   });
+}
 
-    const updateTree = (node) => {
-        // Если этот узел — тот самый split, который мы хотим удалить
-        if (node.id === targetId && node.type === 'split') {
-            return {
-                id: Math.random(),
-                type: 'glass'
-            };
-        }
-
-        // Если нет, идем глубже по дереву
-        if (node.type === 'split') {
-            return {
-                ...node,
-                child1: updateTree(node.child1),
-                child2: updateTree(node.child2)
-            };
-        }
-        return node;
-    };
-
-    setTree(prev => updateTree(prev));
-};
