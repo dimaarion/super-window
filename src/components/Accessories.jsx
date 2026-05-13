@@ -1,7 +1,11 @@
-import {useCallback, useEffect, useState} from "react";
-import {insertTable, select} from "../action/index.js";
+import {useEffect, useState} from "react";
+import {insertTable, remove, select, updateTb} from "../action/index.js";
+import { Button, Modal, ModalBody, ModalHeader, Select } from "flowbite-react";
+
+
 
 export default function Accessories() {
+
  const price = [
      {name:"Без цвета",type:"noColor"},
      {name:"Белый",type:"white"},
@@ -24,15 +28,18 @@ export default function Accessories() {
       manufacturer:""
   }
     const [value, setValue] = useState(defaultValue);
+   // const [updateValue, setUpdateValue] = useState(defaultValue);
     const [list, setList] = useState([{}]);
     const [open, setOpen] = useState(false);
+    const [save, setSave] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [element, setElement] = useState({id:0,name:""});
+    const [update, setUpdate] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, type } = e.target;
         setValue((prevState) => ({
-            ...prevState,
-            // Если тип инпута number, преобразуем строку в число
-            [name]: type === 'number' ? parseFloat(value) || 0 : value
+            ...prevState, [name]: type === 'number' ? parseFloat(value) || 0 : value
         }));
     };
 
@@ -40,15 +47,18 @@ export default function Accessories() {
         select("Accessories").then((res) => {
             setList(res)
         })
-    }, []);
-    const [, updateState] = useState();
-    useCallback(() => updateState({}), []);
+    }, [list]);
+
+   const selectData = ["мм","шт","м"]
 
     return <>
         <div className={"flex justify-end"}>
-            <div onClick={()=>setOpen(true)} className={"w-[100px] p-2 cursor-pointer hover:bg-blue-400 bg-blue-300 text-center m-6"}>
+            <Button  onClick={()=> {
+                setOpen(true)
+                setValue(defaultValue)
+            }} className={"w-[100px] p-2 text-gray-900 cursor-pointer hover:bg-blue-400 bg-blue-300 text-center m-6"}>
                 Добавить
-            </div>
+            </Button>
         </div>
         <div className={"flex"}>
             <table className={"mx-6 w-full"}>
@@ -60,35 +70,69 @@ export default function Accessories() {
                 </tr>
                 </thead>
                 <tbody>
-                {list.map((item, index) => <tr className={"cursor-pointer hover:bg-blue-100"} key={index + item.id + item.article}>
+                {list.map((item, index) => <tr onClick={()=>{
+                    setOpen(true)
+                    setUpdate(true)
+                    setElement({id: item.id, name: item.name})
+                    setValue({
+                        id:item.id,
+                        article:item.article,
+                        name:item.name,
+                        width: item.width,
+                        dearth:item.dearth,
+                        grooveOffset:item.grooveOffset,
+                        unit:item.unit,
+                        noColor:item.noColor,
+                        white:item.white,
+                        both_sides:item.both_sides,
+                        outside:item.outside,
+                        inside:item.inside,
+                        manufacturer:item.manufacturer
+                    })
+                }} className={"cursor-pointer hover:bg-blue-100"} key={index + item.id + item.article}>
                     <td className={"p-2 text-center"}>{item.id}</td>
                     <td className={"p-2 text-start"}>{item.article}</td>
                     <td className={"p-2 text-start"}>{item.name}</td>
+                    <td onClick={() => {
+                        setOpenModal(true)
+                        setElement({id: item.id, name: item.name})
+                    }} className={"hover:bg-blue-400 hidden"}>
+                        <div className={"flex justify-center w-full h-full"}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 className="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                            </svg>
+                        </div>
+
+                    </td>
                 </tr>)}
                 </tbody>
             </table>
         </div>
-        {open?<table className={"fixed m-auto bg-amber-50 w-1/3 h-auto top-[100px]  left-0 right-0"}>
+        {open ? <table className={"absolute m-auto bg-amber-50 w-1/3 h-auto top-[100px] border-5 border-amber-100 left-0 right-0"}>
             <tbody>
             <tr>
                 <td className={"p-2 text-center"}>
                     <label>
                         <div className={"text-start"}>Артикул</div>
-                        <div className={"text-start"}><input name={"article"} onChange={handleChange} placeholder={"Артикул"} type={"text"} className={"bg-gray-200 w-full px-2"}/></div>
+                        <div className={"text-start"}><input name={"article"} defaultValue={value.article}  onChange={handleChange}
+                                                             placeholder={"Артикул"} type={"text"}
+                                                             className={"bg-gray-200 w-full px-2"}/></div>
                     </label>
                     <label>
                         <div className={"text-start"}>Название</div>
-                        <div className={"text-start"}><input name={"name"} onChange={handleChange} placeholder={"Название"} type={"text"} className={"bg-gray-200 w-full px-2"}/></div>
+                        <div className={"text-start"}><input name={"name"} defaultValue={value.name} onChange={handleChange} placeholder={"Название"} type={"text"} className={"bg-gray-200 w-full px-2"}/></div>
                     </label>
                 </td>
                 <td className={"p-2 text-center w-[100px]"}>
                     <label>
                         <div className={"text-start"}>Ширина</div>
-                        <div className={"text-start"}><input name={"width"} onChange={handleChange} defaultValue={0} type={"number"} className={"bg-gray-200 w-full px-2"}/></div>
+                        <div className={"text-start"}><input name={"width"}  onChange={handleChange} defaultValue={value.width} type={"number"} className={"bg-gray-200 w-full px-2"}/></div>
                     </label>
                     <label>
                         <div className={"text-start"}>Глубина</div>
-                        <div className={"text-start"}><input name={"dearth"} onChange={handleChange} defaultValue={0} type={"number"} className={"bg-gray-200 w-full px-2"}/></div>
+                        <div className={"text-start"}><input name={"dearth"} onChange={handleChange} defaultValue={value.dearth} type={"number"} className={"bg-gray-200 w-full px-2"}/></div>
                     </label>
                 </td>
             </tr>
@@ -96,7 +140,7 @@ export default function Accessories() {
                 <td className={"px-2"}> <div>Расстояние до фурнитурного паза</div></td>
                 <td className={"p-2 text-center w-[100px]"}>
                     <label>
-                        <div className={"text-start"}><input name={"grooveOffset"} onChange={handleChange} defaultValue={0} type={"number"} className={"bg-gray-200 w-full px-2"}/></div>
+                        <div className={"text-start"}><input name={"grooveOffset"} onChange={handleChange} defaultValue={value.grooveOffset} type={"number"} className={"bg-gray-200 w-full px-2"}/></div>
                     </label>
                 </td>
             </tr>
@@ -105,11 +149,10 @@ export default function Accessories() {
                 <td>
                     <label>
                         <div className={"text-center"}>
-                            <select name={"unit"} onChange={handleChange}>
-                                <option>мм.</option>
-                                <option>шт.</option>
-                                <option>м.</option>
-                            </select>
+                            <Select name={"unit"} onChange={handleChange}>
+                                {selectData.filter((el)=>el === value.unit).map((el,i)=> <option key={i + "unit_def"} value={el}>{el}.</option>)}
+                                {selectData.filter((el)=>el).map((el,i)=> <option key={i + "unit_"} value={el}>{el}.</option>)}
+                            </Select>
                         </div>
                     </label>
                 </td>
@@ -125,7 +168,7 @@ export default function Accessories() {
                                 {elem.name}
                             </div>
                             <div>
-                                <input name={elem.type} onChange={handleChange} defaultValue={0} type={"number"} className={"bg-gray-200 w-[100px] px-2 self-center flex"}/>
+                                <input name={elem.type} onChange={handleChange} defaultValue={[value.noColor,value.white,value.both_sides,value.outside,value.inside][index]} type={"number"} className={"bg-gray-200 w-[100px] px-2 self-center flex"}/>
                             </div>
                         </label>
                     </div>
@@ -143,27 +186,63 @@ export default function Accessories() {
                 </td>
             </tr>)}
             <tr>
-                <td className={"flex justify-end p-2"}>
-                    <div onClick={()=>{
-                        if(value.article === "" || value.name === "")return;
-                        insertTable("Accessories",value)
+                <td className={"flex justify-end p-2 gap-x-4"}>
+                    {update?<Button onClick={() => {
+                        remove("Accessories", element.id)
                         setOpen(false)
-                    }} className={"bg-blue-300 w-[100px] p-2 text-center cursor-pointer hover:bg-blue-400"}>
+                        setUpdate(false)
+                    }}
+                             className={"bg-blue-300 text-gray-900 w-[100px] p-2 text-center cursor-pointer hover:bg-blue-400"}>
+                        Удалить
+                    </Button>:""}
+                    <Button type={"submit"} onClick={()=>{
+                        if(value.article === "" || value.name === "")return;
+                        if(update){
+                            updateTb("Accessories",value,element.id)
+                        }else {
+                            insertTable("Accessories",value)
+                        }
+                        setSave(true)
+                        setOpen(false)
+                        setUpdate(false)
+                    }} className={"bg-blue-300 text-gray-900 w-[100px] p-2 text-center cursor-pointer hover:bg-blue-400"}>
                         Сохранить
-                    </div>
+                    </Button>
 
                 </td>
                 <td className={"p-2"}>
-                    <div onClick={()=>{
+                    <Button onClick={()=>{
                         setOpen(false)
-                    }} className={"bg-blue-300 w-[100px] p-2 text-center cursor-pointer hover:bg-blue-400"}>
+                        setUpdate(false)
+                    }} className={"bg-blue-300 text-gray-900 w-[100px] p-2 text-center cursor-pointer hover:bg-blue-400"}>
                         Закрыть
-                    </div>
+                    </Button>
                 </td>
             </tr>
             </tbody>
         </table>:""}
 
 
+        <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+            <ModalHeader />
+            <ModalBody>
+                <div className="text-center">
+                    <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                        Удалить элемент: {element.name}
+                    </h3>
+                    <div className="flex justify-center gap-4">
+                        <Button color="red" onClick={() => {
+                            setOpenModal(false)
+                            remove("Accessories",element.id)
+                        }}>
+                           Да
+                        </Button>
+                        <Button color="alternative" onClick={() => setOpenModal(false)}>
+                           Нет
+                        </Button>
+                    </div>
+                </div>
+            </ModalBody>
+        </Modal>
     </>
 }

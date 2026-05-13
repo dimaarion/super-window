@@ -18,11 +18,12 @@ export default function WindowView({
                                        height = 1500,       // Высота проема (мм)
                                        heightProfile = 60,  // Ширина рамы (мм)
                                        color = "#FFFFFF",
-                                       impostWidth = 120
                                        // Цвет профиля
                                    }) {
     const tree = useSelector(state => state.tree.value);
     const impostOpen = useSelector(state => state.impostConfigOpen.value);
+    const selectSashWidth = useSelector(state => state.sashWidth.value);
+    const impostWidth = useSelector((state) => state.impostWidth.value);
     const dispatch = useDispatch()
     const hp = heightProfile;
     const minSize = 0;    // Минимально допустимый размер стеклопакета
@@ -133,8 +134,8 @@ export default function WindowView({
                     {/* Базовое стекло / проем */}
                     <rect
                         x={worldX} y={worldY} width={Math.max(0, node.w)} height={Math.max(0, node.h)}
-                        fill="#BAE6FD" fillOpacity="0.2" stroke="#94A3B8" strokeWidth="1"
-                        className="cursor-pointer hover:fill-sky-100 transition-colors"
+                        fill="#7DD3FC" fillOpacity="0.2" stroke="#94A3B8" strokeWidth="1"
+                        className="cursor-pointer hover:fill-sky-100 "
                         onClick={() => {
                             splitSegment(node.id)
                             dispatch(setGlassId(node.id))
@@ -144,6 +145,8 @@ export default function WindowView({
                     {/* Вставка створки как отдельного компонента */}
                     {node.hasSash && (
                         <Sash
+                            overlap={selectSashWidth.paz}
+                            sashWidth={selectSashWidth.width}
                             x={worldX}
                             y={worldY}
                             w={Math.max(0, node.w)}
@@ -226,12 +229,13 @@ export default function WindowView({
     const fullH = height + hp * 2;
 
     return (
-        <div className="w-full flex flex-col items-center p-4 bg-slate-50 rounded-lg shadow-inner">
+        <div className="w-full flex flex-col items-center p-4">
             <svg
                 className="w-full max-h-[700px] overflow-visible"
                 viewBox={`0 0 ${fullW + 200} ${fullH + 200}`}
                 fill="none" xmlns="http://www.w3.org/2000/svg"
             >
+                <image x={-150} y={-150} href="./img/bg-wndow.png" width={fullW + 450} height={fullH + 450}  />
                 {/* Внешняя рама профиля */}
                 <g fill={color} stroke="#334155" strokeWidth="2">
                     <path d={`M0,0 L${fullW},0 L${fullW-hp},${hp} L${hp},${hp} Z`} />
@@ -254,11 +258,11 @@ export default function WindowView({
                             return (
                                 <g key={i}>
                                     {/* Размерная линия (горизонтальная) */}
-                                    <line x1={xStart} y1={yPos} x2={xEnd} y2={yPos} stroke="#64748b" strokeWidth="1" />
+                                    <line x1={xStart} y1={yPos} x2={xEnd} y2={yPos} stroke="#fff" strokeWidth="1" />
 
                                     {/* Засечки (диагональные штрихи) */}
-                                    <line x1={xStart - 4} y1={yPos + 4} x2={xStart + 4} y2={yPos - 4} stroke="#475569" strokeWidth="2" />
-                                    <line x1={xEnd - 4} y1={yPos + 4} x2={xEnd + 4} y2={yPos - 4} stroke="#475569" strokeWidth="2" />
+                                    <line x1={xStart - 4} y1={yPos + 4} x2={xStart + 4} y2={yPos - 4} stroke="#fff" strokeWidth="2" />
+                                    <line x1={xEnd - 4} y1={yPos + 4} x2={xEnd + 4} y2={yPos - 4} stroke="#fff" strokeWidth="2" />
 
                                     {/* Текст размера */}
                                     <text
@@ -267,7 +271,7 @@ export default function WindowView({
                                         textAnchor="middle"
                                         style={{
                                             fontSize: `${Math.max(14, (width + height) / 60)}px`,
-                                            fill: '#334155', fontWeight: '600' }}
+                                            fill: '#fff', fontWeight: '600' }}
                                     >
                                         {d.val}
                                     </text>
@@ -287,11 +291,11 @@ export default function WindowView({
                             return (
                                 <g key={i}>
                                     {/* Размерная линия (вертикальная) */}
-                                    <line x1={xPos} y1={yStart} x2={xPos} y2={yEnd} stroke="#64748b" strokeWidth="1" />
+                                    <line x1={xPos} y1={yStart} x2={xPos} y2={yEnd} stroke="#fff" strokeWidth="1" />
 
                                     {/* Засечки */}
-                                    <line x1={xPos - 4} y1={yStart + 4} x2={xPos + 4} y2={yStart - 4} stroke="#475569" strokeWidth="2" />
-                                    <line x1={xPos - 4} y1={yEnd + 4} x2={xPos + 4} y2={yEnd - 4} stroke="#475569" strokeWidth="2" />
+                                    <line x1={xPos - 4} y1={yStart + 4} x2={xPos + 4} y2={yStart - 4} stroke="#fff" strokeWidth="2" />
+                                    <line x1={xPos - 4} y1={yEnd + 4} x2={xPos + 4} y2={yEnd - 4} stroke="#fff" strokeWidth="2" />
 
                                     {/* Текст размера, повернутый на 90 градусов */}
                                     <text
@@ -302,7 +306,7 @@ export default function WindowView({
                                         transform={`rotate(90, ${xPos + 15}, ${hp + d.pos})`} // Поворот вокруг собственной точки
                                         style={{
                                             fontSize: `${Math.max(14, (width + height) / 60)}px`,
-                                            fill: '#334155',
+                                            fill: '#fff',
                                             fontWeight: '600'
                                         }}
                                     >
@@ -318,12 +322,12 @@ export default function WindowView({
                 <g fill="#1e293b" style={{ fontSize: `${dynamicFontSize}px`, fontWeight: '700' }}>
                     <text style={{
                         fontSize: `${Math.max(14, (width + height) / 60)}px`,
-                        fill: '#334155',
+                        fill: '#fff',
                         fontWeight: '600'
                     }}  x={fullW / 2} y={fullH + 160} textAnchor="middle">Ширина: {width} мм</text>
                     <text style={{
                         fontSize: `${Math.max(14, (width + height) / 60)}px`,
-                        fill: '#334155',
+                        fill: '#fff',
                         fontWeight: '600'
                     }} x={fullW + 160} y={fullH / 2} textAnchor="middle" transform={`rotate(90, ${fullW + 160}, ${fullH / 2})`}>Высота: {height} мм</text>
                 </g>
@@ -335,6 +339,7 @@ export default function WindowView({
                         hp={hp}
                     />
                 )}
+
             </svg>
         </div>
     );

@@ -28,10 +28,73 @@ export async function createBase(name,v = 1) {
             manufacturer: { dataType: "string" }
         }
     };
+    const tblWindow = {
+        name: "Window",
+        columns: {
+            id: { primaryKey: true, autoIncrement: true },
+            article: { dataType: "string", notNull: true },     // Артикул готового окна
+            name: { dataType: "string", notNull: true },        // Название (например, "Окно балконное")
+            width: { dataType: "number", notNull: true },       // Ширина
+            height: { dataType: "number", notNull: true },      // Высота
+            color: { dataType: "string", notNull: true },                      // Цвет профиля/рамы
+            system: { dataType: "string", notNull: true },      // Система (Rehau, ADOPEN, Salamander)
+            category: { dataType: "string", notNull: true },    // Категория (Балконное, Панорамное, Дверь)
+            frameId: { dataType: "number" },                    // Рама
+            sashId: { dataType: "number" },                     // Створка
+            impostId: { dataType: "number" },                   // Импост
+            shtulpId: { dataType: "number" },                   // Штульп
+            fillingId: { dataType: "number" },                  // Заполнение (стеклопакет/панель)
+            hardwareId: { dataType: "number" },                 // Комплект фурнитуры (из таблицы Hardware)
+            accessories: { dataType: "array" },                 // Доп. комплектующие (ручки, замки, петли)
+            price: { dataType: "number" },                      // Итоговая цена
+            createdAt: { dataType: "date_time" },               // Дата создания
+            updatedAt: { dataType: "date_time" }                // Дата обновления
+        }
+    };
+
+    const tblHardware = {
+        name: "Hardware",
+        columns: {
+            id: { primaryKey: true, autoIncrement: true },
+            name: { dataType: "string", notNull: true },
+            setId: { dataType: "array", default: [] },
+        }
+    };
+
+    const tblHardwareSet = {
+        name: "HardwareSet",
+        columns: {
+            id: { primaryKey: true, autoIncrement: true },
+            name: { dataType: "string"},
+            accessoriesId: { dataType: "number", notNull: true },
+            count: { dataType: "number", default: 1 },
+            specificationId:{dataType: "array", default: []},
+            distance:{dataType: "number", default: 0},
+            indent:{dataType: "number", default: 0}
+        }
+    };
+    const tblSetSpecification = {
+        name: "SetSpecification",
+        columns: {
+            id: { primaryKey: true, autoIncrement: true },
+            accessoriesId: { dataType: "number", notNull: true },
+            count: { dataType: "number", default: 1 },
+        }
+    };
+
+
+
     let db = {
         name: name,
         version: v,
-        tables: [tblAccessories,tbColors]
+        tables: [
+            tblAccessories,
+            tbColors,
+            tblWindow,
+            tblHardware,
+            tblHardwareSet,
+            tblSetSpecification
+        ]
     }
 
 
@@ -50,11 +113,31 @@ export async function deleteDatabase() {
 
 
 export async function insertTable(tbName, value){
-     await connection.insert({
+    return  await connection.insert({
         into: tbName,
         values: [value],
     });
 }
+
+export async function remove(tbName, id){
+  return   await connection.remove({
+        from: tbName,
+        where: {
+            id: id,
+        }
+    });
+}
+
+export async function updateTb(tbName,value, id){
+    return   await connection.update({
+        in: tbName,
+        set:value,
+        where: {
+            id: id,
+        }
+    });
+}
+
 
 export async function select(tbName){
    return  await connection.select({
@@ -62,3 +145,16 @@ export async function select(tbName){
    });
 }
 
+export async function whereId(tbName,id){
+    return  await connection.select({
+        from: tbName,
+        where:{
+            id:Number.parseInt(id)
+        }
+    });
+}
+
+
+export function parseNan(el){
+    return !isNaN(el)?el:0
+}
