@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import {parseNum} from "../action/index.js";
 
 export const windowWidth = createSlice({
     name:"width",
@@ -7,7 +8,7 @@ export const windowWidth = createSlice({
     },
     reducers:{
         setWindowWidth:(state,action)=>{
-            state.value = action.payload < 200?200:Number.parseInt(action.payload)
+            state.value = parseNum(action.payload);
         }
     }
 

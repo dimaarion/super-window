@@ -14,8 +14,9 @@ export async function createBase(name,v = 1) {
         name: "Accessories",
         columns: {
             id: { primaryKey: true, autoIncrement: true },
-            article: { dataType: "string", notNull: true },
-            name: { dataType: "string", notNull: true },
+            article: { dataType: "string"},
+            name: { dataType: "string"},
+            category: { dataType: "string"},
             width: { dataType: "number", default: 0 },
             dearth: { dataType: "number", default: 0 },
             grooveOffset: { dataType: "number", default: 0 },
@@ -157,4 +158,12 @@ export async function whereId(tbName,id){
 
 export function parseNan(el){
     return !isNaN(el)?el:0
+}
+
+export function parseNum(num){
+    num = num.replace(/A-Za-z|А-Яа-я/g,'')
+    num = parseInt(num);
+    num = isNaN(num) ? 0 : num;
+    num = Math.min(num,10000)
+    return num
 }

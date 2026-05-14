@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import {parseNum} from "../action/index.js";
 
 export const windowHeight = createSlice({
     name:"height",
@@ -7,7 +8,7 @@ export const windowHeight = createSlice({
     },
     reducers:{
         setWindowHeight:(state,action)=>{
-            state.value = action.payload < 200?200:Number.parseInt(action.payload)
+            state.value = parseNum( action.payload);
         }
     }
 

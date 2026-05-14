@@ -20,7 +20,6 @@ export default function Home() {
     const dispatch = useDispatch()
     return <>
         <div className={"w-1/2 justify-center flex px-5"}>
-
            <WindowBuilder />
         </div>
         <div className={"w-full"}>
@@ -30,18 +29,6 @@ export default function Home() {
 
             </div>
             <div className={"flex-wrap lg:flex justify-center"}>
-                <div className={"p-2"}>
-                    <input min={200} placeholder={'1500'} onChange={(e) => {
-                        dispatch(setWindowWidth(e.target.value))
-                    }} className={"bg-amber-50 p-2"} type={"number"}/>
-                    <div className={"text-start lg:text-center"}>Ширина</div>
-                </div>
-                <div className={"p-2"}>
-                    <input min={200} placeholder={'1500'} onChange={(e) => {
-                        dispatch(setWindowHeight(e.target.value))
-                    }} className={"bg-amber-50 p-2"} type={"number"}/>
-                    <div className={"text-start lg:text-center"}>Высота</div>
-                </div>
                 <div className={"p-2"}>
                     <ColorSelect/>
                     <div className={"text-start lg:text-center"}>Цвет</div>

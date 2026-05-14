@@ -50,6 +50,20 @@ display: block;
 
 }
 
+.visible-parent:hover .visible-item{
+    opacity: 1;
+    transition: 0.5s;
+}
+
+
+.visible-item{
+    opacity: 0;
+
+}
+
+
+
+
 @media (max-width: 1000px) {
     #separation-item{
         left: 0;

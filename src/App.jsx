@@ -10,7 +10,7 @@ import {connection} from "./Db.js";
 import SetForm from "./components/SetForm.jsx";
 import {createTheme, ThemeProvider} from "flowbite-react";
 
-const tb = "CALCULATOR_2"
+const tb = "CALCULATOR_4"
 await createBase(tb, 1)
 
 function App() {
@@ -33,7 +33,33 @@ function App() {
 
     const navigation = ["Главная", "Комплектующие", "Фурнитура", "Наборы"]
     const customTheme = createTheme({
+        button:{
+          "base":"cursor-pointer"
+        },
         textInput: {
+            "base": "flex",
+            "addon": "inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400",
+            "field": {
+                "base": "relative w-full",
+                "input": {
+                    "base": "block w-full border focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50",
+                    "sizes": {
+                        "sm": "p-2 sm:text-xs",
+                        "md": "p-2.5 text-sm",
+                        "lg": "p-4 sm:text-base"
+                    },
+                    "colors": {
+                        "myColor": "border-gray-600 bg-gray-900 text-gray-50 placeholder-gray-500 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500",
+                        "gray": "border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500",
+                        "info": "border-cyan-500 bg-cyan-50 text-cyan-900 placeholder-cyan-700 focus:border-cyan-500 focus:ring-cyan-500 dark:border-cyan-400 dark:bg-cyan-100 dark:focus:border-cyan-500 dark:focus:ring-cyan-500",
+                        "failure": "border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:bg-red-100 dark:focus:border-red-500 dark:focus:ring-red-500",
+                        "warning": "border-yellow-500 bg-yellow-50 text-yellow-900 placeholder-yellow-700 focus:border-yellow-500 focus:ring-yellow-500 dark:border-yellow-400 dark:bg-yellow-100 dark:focus:border-yellow-500 dark:focus:ring-yellow-500",
+                        "success": "border-green-500 bg-green-50 text-green-900 placeholder-green-700 focus:border-green-500 focus:ring-green-500 dark:border-green-400 dark:bg-green-100 dark:focus:border-green-500 dark:focus:ring-green-500"
+                    },
+                },
+            }
+        },
+        select: {
             "base": "flex",
             "addon": "inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400",
             "field": {
@@ -46,20 +72,15 @@ function App() {
                     "base": "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3",
                     "svg": "h-5 w-5 text-gray-500 dark:text-gray-400"
                 },
-                "input": {
-                    "base": "block w-full border focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50",
+                "select": {
+                    "base": "block w-full border disabled:cursor-not-allowed disabled:opacity-50",
+                    "colors": {
+                        "myColor": "border-gray-600 bg-gray-900 text-gray-50 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    },
                     "sizes": {
                         "sm": "p-2 sm:text-xs",
                         "md": "p-2.5 text-sm",
                         "lg": "p-4 sm:text-base"
-                    },
-                    "colors": {
-                        "myColor": "border-gray-300 bg-gray-800 text-gray-50 placeholder-gray-500 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500",
-                        "gray": "border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500",
-                        "info": "border-cyan-500 bg-cyan-50 text-cyan-900 placeholder-cyan-700 focus:border-cyan-500 focus:ring-cyan-500 dark:border-cyan-400 dark:bg-cyan-100 dark:focus:border-cyan-500 dark:focus:ring-cyan-500",
-                        "failure": "border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:bg-red-100 dark:focus:border-red-500 dark:focus:ring-red-500",
-                        "warning": "border-yellow-500 bg-yellow-50 text-yellow-900 placeholder-yellow-700 focus:border-yellow-500 focus:ring-yellow-500 dark:border-yellow-400 dark:bg-yellow-100 dark:focus:border-yellow-500 dark:focus:ring-yellow-500",
-                        "success": "border-green-500 bg-green-50 text-green-900 placeholder-green-700 focus:border-green-500 focus:ring-green-500 dark:border-green-400 dark:bg-green-100 dark:focus:border-green-500 dark:focus:ring-green-500"
                     },
                     "withRightIcon": {
                         "on": "pr-10",
@@ -79,36 +100,24 @@ function App() {
                     }
                 }
             }
-        },
-        select: {
-            "base": "border-blue-300 round bg-gray-50 text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500",
-            "colors": {
-                "test": "border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500",
-                "info": "border-cyan-500 bg-cyan-50 text-cyan-900 placeholder-cyan-700 focus:border-cyan-500 focus:ring-cyan-500 dark:border-cyan-400 dark:bg-cyan-100 dark:focus:border-cyan-500 dark:focus:ring-cyan-500",
-                "failure": "border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:bg-red-100 dark:focus:border-red-500 dark:focus:ring-red-500",
-                "warning": "border-yellow-500 bg-yellow-50 text-yellow-900 placeholder-yellow-700 focus:border-yellow-500 focus:ring-yellow-500 dark:border-yellow-400 dark:bg-yellow-100 dark:focus:border-yellow-500 dark:focus:ring-yellow-500",
-                "success": "border-green-500 bg-green-50 text-green-900 placeholder-green-700 focus:border-green-500 focus:ring-green-500 dark:border-green-400 dark:bg-green-100 dark:focus:border-green-500 dark:focus:ring-green-500"
-            },
-        },
-
+        }
 
     });
     return (
         <>
             <ThemeProvider theme={customTheme}>
-                <header className={"flex justify-center h-[60px] text-white bg-gray-800 shadow-md"}>
+                <header className={"flex justify-center h-[60px] text-white bg-gray-950 shadow-md"}>
                     <nav className={"flex justify-between gap-2"}>
                         {navigation.map((el) => <div key={el} onClick={() => {
                             dispatch(setPage(el))
-                        }}
-                                                     className={`flex self-center hover:underline cursor-pointer ${page === el ? 'underline text-blue-400' : ''}`}>
+                        }} className={`flex self-center hover:underline cursor-pointer ${page === el ? 'underline text-blue-400' : ''}`} >
                             {el}
                         </div>)}
 
 
                     </nav>
                 </header>
-                <article className={"bg-gray-700"}>
+                <article className={"bg-gray-800"}>
                     {page === "Главная" ? <div className={"flex justify-center w-full"}><Home/></div> : ""}
                     {page === "Комплектующие" ? <Accessories/> : ""}
                     {page === "Фурнитура" ? <HardwareForm/> : ""}
