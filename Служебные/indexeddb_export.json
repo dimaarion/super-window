@@ -1,0 +1,275 @@
+{
+  "Accessories": [
+    {
+      "article": "760 002",
+      "name": "Рама",
+      "category": "Профиль",
+      "width": 64,
+      "dearth": 76,
+      "grooveOffset": 0,
+      "unit": "мм",
+      "noColor": 0,
+      "white": 100,
+      "both_sides": 0,
+      "outside": 0,
+      "inside": 0,
+      "manufacturer": "",
+      "id": 1
+    },
+    {
+      "article": "761 000",
+      "name": "Створка",
+      "category": "Профиль",
+      "width": 68,
+      "dearth": 76,
+      "grooveOffset": 19,
+      "unit": "мм",
+      "noColor": 0,
+      "white": 100,
+      "both_sides": 0,
+      "outside": 0,
+      "inside": 0,
+      "manufacturer": "",
+      "id": 2
+    },
+    {
+      "article": "762 006",
+      "name": "Импост",
+      "category": "Профиль",
+      "width": 90,
+      "dearth": 76,
+      "grooveOffset": 0,
+      "unit": "мм",
+      "noColor": 0,
+      "white": 100,
+      "both_sides": 0,
+      "outside": 0,
+      "inside": 0,
+      "manufacturer": "",
+      "id": 3
+    },
+    {
+      "article": "Ручка ПВХ",
+      "name": "Ручка ПВХ",
+      "category": "Фурнитура",
+      "width": 0,
+      "dearth": 0,
+      "grooveOffset": 0,
+      "unit": "мм",
+      "noColor": 0,
+      "white": 100,
+      "both_sides": 0,
+      "outside": 0,
+      "inside": 0,
+      "manufacturer": "",
+      "id": 4
+    },
+    {
+      "article": "СА 6 х 13",
+      "name": "СА 6 х 13",
+      "category": "Саморезы",
+      "width": 0,
+      "dearth": 0,
+      "grooveOffset": 0,
+      "unit": "мм",
+      "noColor": 0,
+      "white": 0,
+      "both_sides": 0,
+      "outside": 0,
+      "inside": 0,
+      "manufacturer": "",
+      "id": 5
+    }
+  ],
+  "Colors": [],
+  "Window": [],
+  "Hardware": [
+    {
+      "name": "MACO",
+      "setId": [
+        1,
+        1,
+        3,
+        0
+      ],
+      "id": 1
+    },
+    {
+      "name": "KALE",
+      "setId": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "id": 2
+    }
+  ],
+  "HardwareSet": [
+    {
+      "name": "Ручка",
+      "accessoriesId": 4,
+      "count": 50,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 1
+    },
+    {
+      "name": "Саморезы",
+      "accessoriesId": 5,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 2
+    },
+    {
+      "name": "sdvs",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 3
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 4
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 5
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 6
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 7
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 8
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 9
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 10
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 11
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 12
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 13
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 14
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 15
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 16
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 17
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 18
+    }
+  ],
+  "SetSpecification": []
+}
