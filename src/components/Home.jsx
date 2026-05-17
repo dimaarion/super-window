@@ -1,11 +1,7 @@
 import WindowView from "./WindowView.jsx";
-import {setWindowWidth} from "../features/windowWidth.js";
-import {setWindowHeight} from "../features/windowHeight.js";
-import ColorSelect from "./ColorSelect.jsx";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import ImpostConfig from "./ImpostConfig.jsx";
 import ConfigList from "./ConfigList.jsx";
-import {Label, Select} from "flowbite-react";
 import WindowBuilder from "./WindowBuilder.jsx";
 
 export default function Home() {
@@ -17,22 +13,16 @@ export default function Home() {
     const impostOpen = useSelector(state => state.impostConfigOpen.value);
     const configOpen = useSelector(state => state.configListOpen.value);
 
-    const dispatch = useDispatch()
+
     return <>
         <div className={"w-1/2 justify-center flex px-5"}>
            <WindowBuilder />
         </div>
-        <div className={"w-full"}>
+        <div className={"w-full overflow-auto"}>
             <div className={"justify-center flex mt-20"}>
                     <WindowView  width={windowWidth} height={windowHeight}
                                  heightProfile={profileHeight} color={windowColor}/>
 
-            </div>
-            <div className={"flex-wrap lg:flex justify-center"}>
-                <div className={"p-2"}>
-                    <ColorSelect/>
-                    <div className={"text-start lg:text-center"}>Цвет</div>
-                </div>
             </div>
         </div>
         <div className={"w-1/2 justify-center flex px-5"}>
@@ -40,7 +30,7 @@ export default function Home() {
             </div>
         </div>
         {impostOpen ? <ImpostConfig impostWidth={impostWidth}/> : ""}
-        {configOpen ? <ConfigList/> : ""}
+        <ConfigList/>
 
     </>
 }

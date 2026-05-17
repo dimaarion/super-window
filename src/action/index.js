@@ -1,6 +1,9 @@
 import {connection} from "../Db.js";
 
-export async function createBase(name,v = 1) {
+const NAMEDB = "CALCULATOR_4"
+const VERSIONDB = 1
+
+export async function createBase() {
     const tbColors = {
         name: "Colors",
         columns: {
@@ -86,8 +89,8 @@ export async function createBase(name,v = 1) {
 
 
     let db = {
-        name: name,
-        version: v,
+        name: NAMEDB,
+        version: VERSIONDB,
         tables: [
             tblAccessories,
             tbColors,
@@ -100,6 +103,51 @@ export async function createBase(name,v = 1) {
 
 
    await connection.initDb(db);
+}
+
+
+
+export async function exportDb() {
+    const schema = await connection.getDbSchema(NAMEDB);
+    const exportData = {};
+
+    for (const table of schema.tables) {
+        const rows = await connection.select({ from: table.name });
+        exportData[table.name] = rows;
+    }
+
+    const json = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "indexeddb_export.json";
+    a.click();
+}
+
+// 📥 Импорт базы из JSON
+export async function importDb(file) {
+    const text = await file.text();
+    const data = JSON.parse(text);
+
+    for (const [tableName, rows] of Object.entries(data)) {
+        for (const row of rows) {
+            const updated = await connection.update({
+                in: tableName,
+                set: row,
+                where: { id: row.id }
+            });
+
+            if (updated === 0) {
+                await connection.insert({
+                    into: tableName,
+                    values: [row]
+                });
+            }
+        }
+    }
+
 }
 
 

@@ -52,16 +52,19 @@ display: block;
 
 .visible-parent:hover .visible-item{
     opacity: 1;
+    visibility: visible;
     transition: 0.5s;
 }
 
 
 .visible-item{
     opacity: 0;
-
+    visibility: hidden;
 }
 
-
+/**{
+    border: solid 1px #dc0e23;
+}*/
 
 
 @media (max-width: 1000px) {

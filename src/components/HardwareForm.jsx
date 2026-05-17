@@ -1,19 +1,25 @@
-import {Button, Label, Select, TextInput} from "flowbite-react";
+import {Button, Label, Modal, ModalBody, ModalHeader, Select, TextInput} from "flowbite-react";
 import {useEffect, useState} from "react";
-import {insertTable, select, updateTb} from "../action/index.js";
+import {insertTable, parseNan, remove, select, updateTb} from "../action/index.js";
+import {connection} from "../Db.js";
 
 export default function HardwareForm() {
     const defaultHardware = {
         name: "",
         setId: []
     }
-    const defaultHardwareSet = {id:1,name:"",accessoriesId:1,count:1,specificationId:[]}
+    const defaultHardwareSet = {name: "", accessoriesId: 1, count: 1, specificationId: [], distance: 0, indent: 0}
     const [list, setList] = useState([{}]);
     const [hardwareList, setHardwareList] = useState([{}]);
     const [id, setId] = useState(1);
+    const [arrId, setArrId] = useState({id:0,arr:[]});
     const [hardware, setHardware] = useState(defaultHardware);
     const [hardwareSet, setHardwareSet] = useState([{}]);
     const [createFurn, setCreateFurn] = useState(false);
+
+    const [openModal, setOpenModal] = useState(false);
+    const [element, setElement] = useState({});
+
     useEffect(() => {
         select("Accessories").then((res) => {
             setList(res)
@@ -24,126 +30,161 @@ export default function HardwareForm() {
         select("Hardware").then((res) => {
             setHardwareList(res)
         })
-    }, [hardware,hardwareList]);
+    }, [hardwareList]);
+
+
+    useEffect(() => {
+        connection.update({
+            in: "Hardware",
+            set: {
+                setId: hardware.setId,
+            },
+            where: {
+                id: arrId.id,
+            }
+        });
+    }, [hardware,arrId]);
+
+    useEffect(() => {
+        connection.select({
+            from: "Hardware",
+            where: {
+                id: 1
+            }
+        }).then((res)=>{
+            const h = res[0]
+            setHardware(h)
+            setArrId({id:h.id,arr:h.setId})
+        })
+    }, []);
 
     useEffect(() => {
         select("HardwareSet").then((res) => {
             setHardwareSet(res)
         })
-    }, []);
+    }, [hardwareSet]);
+
 
     return <>
-        <div className={"flex justify-end m-2 gap-2"}>
-            <Button onClick={() => {
-                setCreateFurn(true)
-            }} className={"w-[100px] p-2 text-gray-900 cursor-pointer hover:bg-blue-400 bg-blue-300 text-center "}>
-                Добавить
-            </Button>
-            <Button onClick={() => {
-                console.log(hardware)
-                updateTb("Hardware",hardware,id)
-            }} className={"w-[100px] p-2 text-gray-900 cursor-pointer hover:bg-blue-400 bg-blue-300 text-center "}>
-                Сохранить
-            </Button>
-        </div>
-        <div className={"flex px-4  gap-4 w-full justify-between"}>
-            <div className={"text-center w-full flex"}>
-                <table className={"w-full "}>
-                    <thead>
-                    <tr className={"bg-blue-300"}>
-                        <td className={"p-2"}>№</td>
-                        <td className={"p-2"}>Название</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {hardwareList.map((el)=><tr onClick={()=>{
-                        setId(el.id)
-                        setHardware({
-                            name: el.name,
-                            setId:el.setId
-                        })
-                    }} className={"hover:bg-blue-100 cursor-pointer"} key={el.id + "Hardware"}>
-                        <td>{el.id}</td>
-                        <td>{el.name}</td>
-                    </tr>)}
-                    </tbody>
-                </table>
-            </div>
-
-            <div className={"text-center w-full relative"}>
-                <div className={"bg-blue-300 p-2"}>Наборы</div>
-                <div className={"flex justify-end w-full absolute"}>
-                    <svg onClick={()=>{
-                        setHardware({name:hardware.name,setId: [...hardware.setId,0] })
-
-                    }}  xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                         className="bi bi-plus-square cursor-pointer m-6" viewBox="0 0 16 16">
-                        <path
-                            d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                        <path
-                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                    </svg>
-                </div>
-                <div className={"absolute"}>
-                    {hardware.setId.map((id,j)=><div key={j} className={"text-start px-4"}>
-                        <Select onChange={(e)=>{
-                            setHardware({name:hardware.name,setId: hardware.setId.map((er,g)=> {
-                                if(j === g){
-                                  er = parseInt(e.target.value)
-                                }
-
-                                    return er
-                                })})
-
-                        }} className={"w-[200px] mt-2"}>
-                            {hardwareSet.filter((f)=>f.id === id).map((set)=><option value={set.id} key={set.id + "opt"}>
-                                {set.name}
-                            </option>)}
-                            {hardwareSet.map((set)=><option value={set.id} key={set.id + "opt"}>
-                                {set.name}
-                            </option>)}
-                        </Select>
-
-                    </div>)}
-                </div>
-
-            </div>
-        </div>
-        {createFurn ?
-            <div className={" w-full sm:w-1/2 absolute p-4 m-auto right-0 left-0 bg-amber-50 overflow-auto h-auto"}>
-                <div className={"flex justify-center gap-2 w-full"}>
-                    <div className={"w-full"}>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label htmlFor="name">Название</Label>
+            <div className={"flex justify-center text-gray-50 pt-6 px-4"}>
+                <div className={"flex w-full justify-center px-6 gap-4"}>
+                    <div className={"w-1/2  shadow-xl shadow-gray-950"}>
+                        <div className={"flex justify-between bg-gray-700"}>
+                            <div>
+                                <h2 className={"text-center p-2"}>Фурнитура</h2>
+                            </div>
+                            <div onClick={() => {
+                                setOpenModal(true)
+                            }} data-tooltip="Добавить фурнитуру"
+                                 className="group relative flex text-3xl self-center items-center justify-center mt-[-2px] w-10 text-gray-400 cursor-pointer">
+                                <span>+</span>
+                                <div
+                                    className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white shadow-lg">
+                                    Добавить фурнитуру
+                                </div>
+                            </div>
                         </div>
-                        <TextInput className={"w-full"} name={"name"} onChange={(e) => {
+                        <div className={"p-3"}>
+                            {hardwareList.map((el) => <div onClick={()=>{
+                                setArrId({id:el.id,arr:el.setId})
+                                connection.select({
+                                    from: "Hardware",
+                                    where: {
+                                        id: el.id
+                                    }
+                                }).then((res)=>{
+                                    const h = res[0]
+                                    setHardware(h)
+                                })
+                            }} key={el.id + "hardwareList"} className={`flex gap-2 p-2 hover:bg-gray-700 cursor-pointer hover:shadow-lg visible-parent border-b-2 border-gray-500 ${el.id === arrId.id?'bg-gray-700':''}`}>
+                                {el.name}
+                            </div>)}
+
+                        </div>
+                    </div>
+                    <div className={"w-1/2  shadow-xl shadow-gray-950"}>
+                        <div className={"flex justify-between bg-gray-700"}>
+                            <div>
+                                <h2 className={"text-center p-2"}>Наборы</h2>
+                            </div>
+                            <div onClick={() => {
+                                setHardware({name: hardware.name, setId: [...hardware.setId, 0]})
+                            }}
+                                 data-tooltip="Добавить набор"
+                                 className="group relative flex text-3xl self-center items-center justify-center mt-[-2px] w-10 text-gray-400 cursor-pointer"
+                            >+
+                                <div
+                                    className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white shadow-lg">
+                                    Добавить набор
+                                </div>
+                            </div>
+                        </div>
+                        <div className={"overflow-auto h-[500px] mb-6"}>
+                            <div className={"p-3"}>
+                                {hardware.setId.map((idh, j) => <div key={j} className={"text-start flex px-4"}>
+                                    <div>
+                                        <Select color={"myColor"} value={idh} onChange={(e) => {
+                                            setHardware({
+                                                name: hardware.name, setId: hardware.setId.map((er, g) => {
+                                                    if (j === g) {
+                                                        er = parseInt(e.target.value)
+                                                    }
+
+                                                    return er
+                                                })
+                                            })
+
+                                        }} className={"w-[190px] mt-2"}>
+                                            {hardwareSet.map((set) => <option value={set.id} key={set.id + "opt"}>
+                                                {set.name}
+                                            </option>)}
+                                        </Select>
+                                    </div>
+                                    <div className={"flex ml-4"}>
+                                        <div onClick={()=>{
+                                            setHardware({name: hardware.name, setId: hardware.setId.filter((fl,l)=>j !== l)})
+                                        }} className={"flex self-center visible-parent  relative cursor-pointer"}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d9534f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <rect x="3" y="3" width="18" height="18" rx="4" ry="4" stroke="#2b2b2b" fill="none"/>
+                                                <line x1="8" y1="8" x2="16" y2="16"/>
+                                                <line x1="16" y1="8" x2="8" y2="16"/>
+                                            </svg>
+                                            <div className={"absolute visible-item text-sm w-auto m-auto z-30 top-[-25px] left-[-20px]"}>Удалить</div>
+                                        </div>
+                                    </div>
+                                </div>)}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+                <ModalHeader/>
+                <ModalBody>
+                    <div className="text-center">
+                        <h3 className="mb-5 text-lg">
+                            Добавить фурнитуру
+                        </h3>
+                        <TextInput color={"myColor"} name={"name"} onChange={(e) => {
                             const {name, value, type} = e.target;
                             setHardware((prevState) => ({
                                 ...prevState, [name]: type === 'number' ? parseFloat(value) || 0 : value
                             }));
-                        }} id="name" type="text" sizing="md"/>
+                        }}/>
+                        <div className="flex justify-center gap-4 mt-6">
+                            <Button color="blue" onClick={() => {
+                                setOpenModal(false)
+                                insertTable("Hardware", {name: hardware.name, setId: []})
+                            }}>
+                                Сохранить
+                            </Button>
+                            <Button color="blue" onClick={() => setOpenModal(false)}>
+                                Закрыть
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div>
-
-            </div>
-
-            <div className={"flex justify-end mt-6 gap-2"}>
-                <Button
-                    onClick={() => {
-                        setCreateFurn(false)
-                        insertTable("Hardware",{name:hardware.name,setId:[]})
-                    }}
-                    className={"text-gray-900 cursor-pointer hover:bg-blue-400 bg-blue-300 text-center"}>Сохранить</Button>
-                <Button
-                    onClick={() => {
-                        setCreateFurn(false)
-                    }}
-                    className={"text-gray-900 cursor-pointer hover:bg-blue-400 bg-blue-300 text-center"}>Закрыть</Button>
-            </div>
-        </div>:""}
-
-    </>
+                </ModalBody>
+            </Modal>
+        </>
 }

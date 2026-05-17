@@ -7,16 +7,14 @@ import {setSashWidth} from "../features/sashWidth.js";
 import {setImpostWidth} from "../features/impostWidth.js";
 import {setWindowWidth} from "../features/windowWidth.js";
 import {setWindowHeight} from "../features/windowHeight.js";
+import ColorSelect from "./ColorSelect.jsx";
 
 export default function WindowBuilder() {
 
     const windowWidth = useSelector((state) => state.windowWidth.value);
     const windowHeight = useSelector((state) => state.windowHeight.value);
-    const windowColor = useSelector((state) => state.windowColor.value);
-    const profileHeight = useSelector((state) => state.profileHeight.value);
-    const impostWidth = useSelector((state) => state.impostWidth.value);
-    const impostOpen = useSelector(state => state.impostConfigOpen.value);
-    const configOpen = useSelector(state => state.configListOpen.value);
+
+
 
     const [list, setList] = useState([{}]);
     const [hardware, setHardware] = useState([{}]);
@@ -35,12 +33,12 @@ export default function WindowBuilder() {
     }, []);
 
     return <>
-        <div className={"w-full relative z-20 mt-6 ml-4 flex justify-center bg-gray-800 shadow-2xl border-2 text-xl text-white border-gray-500 shadow-black"}>
+        <div className={"w-full relative z-20 mt-6 ml-4 flex justify-center bg-gray-800 shadow-xl shadow-gray-950 text-xl text-gray-50  "}>
             <div className={"w-full "}>
-                <div className={"p-4 bg-gray-900 w-full"}>Параметры {windowWidth}</div>
+                <div className={"p-4 bg-gray-700 w-full"}>Параметры {windowWidth}</div>
                 <div className={"flex justify-between p-4 border-b-2 border-gray-500"}>
                     <div>
-                        <Label htmlFor="width"><div className={"text-xl flex self-center text-white"}>Ширина:</div></Label>
+                        <Label htmlFor="width"><div className={"text-xl flex self-center text-gray-50"}>Ширина:</div></Label>
                     </div>
                     <div>
                         <TextInput onChange={(e) => {
@@ -50,7 +48,7 @@ export default function WindowBuilder() {
                 </div>
                 <div className={"flex justify-between p-4 border-b-2 border-gray-500"}>
                     <div>
-                        <Label htmlFor="height"><div   className={"text-xl flex self-center text-white"}>Высота:</div></Label>
+                        <Label htmlFor="height"><div   className={"text-xl flex self-center text-gray-50"}>Высота:</div></Label>
                     </div>
                     <div>
                         <TextInput onChange={(e) => {
@@ -60,7 +58,15 @@ export default function WindowBuilder() {
                 </div>
                 <div className={"flex justify-between p-4 border-b-2 gap-2 border-gray-500"}>
                     <div className={"flex"}>
-                        <Label htmlFor="ramen"><div className={"text-xl flex self-center text-white"}>Рама:</div></Label>
+                        <Label htmlFor="ramen"><div className={"text-xl flex self-center text-gray-50"}>Цвет:</div></Label>
+                    </div>
+                    <div className={"w-full max-w-[180px] flex"}>
+                        <ColorSelect/>
+                    </div>
+                </div>
+                <div className={"flex justify-between p-4 border-b-2 gap-2 border-gray-500"}>
+                    <div className={"flex"}>
+                        <Label htmlFor="ramen"><div className={"text-xl flex self-center text-gray-50"}>Рама:</div></Label>
                     </div>
                     <div className={"w-full max-w-[180px] flex"}>
                         <Select color="myColor" className={"w-full"} onChange={(e) => {
@@ -75,7 +81,7 @@ export default function WindowBuilder() {
                 </div>
                 <div className={"flex justify-between p-4 border-b-2 gap-2 border-gray-500"}>
                     <div className={"flex"}>
-                        <Label htmlFor="sash"><div className={"text-xl flex self-center text-white"}>Створка:</div></Label>
+                        <Label htmlFor="sash"><div className={"text-xl flex self-center text-gray-50"}>Створка:</div></Label>
                     </div>
                     <div className={"w-full max-w-[180px] flex"}>
                         <Select color="myColor" className={"w-full"} onChange={(e) => {
@@ -90,7 +96,7 @@ export default function WindowBuilder() {
                 </div>
                 <div className={"flex justify-between p-4 border-b-2 gap-2 border-gray-500"}>
                     <div className={"flex"}>
-                        <Label htmlFor="impost"><div className={"text-xl flex self-center text-white"}>Импост:</div></Label>
+                        <Label htmlFor="impost"><div className={"text-xl flex self-center text-gray-50"}>Импост:</div></Label>
                     </div>
                     <div className={"w-full max-w-[180px] flex"}>
                         <Select color="myColor" className={"w-full"} onChange={(e) => {
@@ -105,7 +111,7 @@ export default function WindowBuilder() {
                 </div>
                 <div className={"flex justify-between p-4 border-b-2 gap-2 border-gray-500"}>
                     <div className={"flex"}>
-                        <Label htmlFor="shtulp"><div className={"text-xl flex self-center text-white"}>Штульп:</div></Label>
+                        <Label htmlFor="shtulp"><div className={"text-xl flex self-center text-gray-50"}>Штульп:</div></Label>
                     </div>
                     <div className={"w-full max-w-[180px] flex"}>
                         <Select color="myColor" className={"w-full"} onChange={(e) => {
@@ -120,7 +126,7 @@ export default function WindowBuilder() {
                 </div>
                 <div className={"flex justify-between p-4 border-b-2 gap-2 border-gray-500"}>
                     <div className={"flex"}>
-                        <Label htmlFor="glass"><div className={"text-xl flex self-center text-white"}>Заполнение:</div></Label>
+                        <Label htmlFor="glass"><div className={"text-xl flex self-center text-gray-50"}>Заполнение:</div></Label>
                     </div>
                     <div className={"w-full max-w-[180px] flex"}>
                         <Select color="myColor" className={"w-full"} onChange={(e) => {
@@ -135,7 +141,7 @@ export default function WindowBuilder() {
                 </div>
                 <div className={"flex justify-between p-4 border-b-2 gap-2 border-gray-500"}>
                     <div className={"flex"}>
-                        <Label htmlFor="furniture"><div className={"text-xl flex self-center text-white"}>Фурнитура:</div></Label>
+                        <Label htmlFor="furniture"><div className={"text-xl flex self-center text-gray-50"}>Фурнитура:</div></Label>
                     </div>
                     <div className={"w-full max-w-[180px] flex"}>
                         <Select color="myColor" className={"w-full"} onChange={(e) => {
