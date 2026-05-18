@@ -1,7 +1,7 @@
 import {setSashDirection} from "../features/sashDirection.js";
-import {setConfigListOpen} from "../features/configListOpen.js";
 import {useDispatch, useSelector} from "react-redux";
 import {setTree} from "../features/tree.js";
+import {Button} from "flowbite-react";
 
 
 export default function ConfigSash({setOpenSashConfig, createSash, config = false}){
@@ -86,26 +86,27 @@ export default function ConfigSash({setOpenSashConfig, createSash, config = fals
             </div>
         </div>
         <div className={"flex gap-2 justify-end"}>
-            {config? <div onClick={() => {
-                dispatch(setConfigListOpen(false))
-                createSash()
-            }}  className={"bg-blue-300 p-2 hover:bg-blue-400 cursor-pointer text-center"}>
-                Применить
-            </div>:<div onClick={()=>{
-                dispatch(setConfigListOpen(false))
-                createSash()
-            }} className={"bg-blue-300 p-2 hover:bg-blue-400 cursor-pointer text-center"}>
-                Удалить
-            </div>}
-
-
-
-            <div onClick={()=>{
+            {config? <Button onClick={() => {
                 setOpenSashConfig(false)
+                createSash()
+            }} >
+                Применить
+            </Button>:
+                <div className={"flex gap-2"}>
+                    <Button onClick={()=>{
+                        setOpenSashConfig(false)
+                    }} >
+                        Применить
+                    </Button>
+                    <Button onClick={()=>{
+                        setOpenSashConfig(false)
+                        createSash()
+                    }} >
+                        Удалить
+                    </Button>
+                </div>
+               }
 
-            }} className={"bg-blue-300 p-2 hover:bg-blue-400 cursor-pointer text-center"}>
-                Закрыть
-            </div>
         </div>
     </>
 }

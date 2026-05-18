@@ -215,3 +215,76 @@ export function parseNum(num){
     num = Math.min(num,10000)
     return num
 }
+
+export /**
+ * Конвертирует SVG-элемент в PNG (Data URL)
+ * @param {SVGElement} svgElement - Ссылка на ваш SVG в DOM
+ * @4026 {Promise<string>} - Возвращает строку в формате data:image/png;base64...
+ */
+async function svgToPng(svgElement) {
+    return new Promise((resolve, reject) => {
+        // 1. Получаем XML-код SVG и создаем Blob URL
+        const svgString = new XMLSerializer().serializeToString(svgElement);
+        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const URL = window.URL || window.webkitURL || window;
+        const blobURL = URL.createObjectURL(svgBlob);
+
+        // 2. Создаем виртуальное изображение для загрузки SVG
+        const image = new Image();
+
+        // Берем размеры из самого SVG
+        const width = svgElement.clientWidth || parseInt(svgElement.getAttribute('width')) || 300;
+        const height = svgElement.clientHeight || parseInt(svgElement.getAttribute('height')) || 150;
+
+        image.width = width;
+        image.height = height;
+
+        image.onload = () => {
+            // 3. Рисуем на холсте (Canvas)
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, width, height); // Очищаем холст (для прозрачного фона)
+            context.drawImage(image, 0, 0, width, height);
+
+            // 4. Получаем PNG строку
+            const pngDataUrl = canvas.toDataURL('image/png');
+
+            // Освобождаем память
+            URL.revokeObjectURL(blobURL);
+            resolve(pngDataUrl);
+        };
+
+        image.onerror = (err) => {
+            URL.revokeObjectURL(blobURL);
+            reject(new Error('Ошибка при загрузке SVG в Image: ' + err.message));
+        };
+
+        image.src = blobURL;
+    });
+}
+
+
+
+export function exportSvgToBase64(svgElement) {
+    // 1. Клонируем SVG, чтобы случайно не изменить оригинал в интерфейсе
+    const clonedSvg = svgElement.cloneNode(true);
+
+    // Важно: если стили окна (цвет профиля, линии) заданы через внешний CSS (например, Tailwind или глобальный файл),
+    // их нужно внедрить внутрь самого SVG перед экспортом, иначе в базе сохранится "черный силуэт".
+    // Если у вас все стили инлайновые (fill="#3b82f6", stroke="#fff"), этот шаг можно пропустить.
+
+    // 2. Сериализуем (переводим) DOM-объект SVG в текстовую XML-строку
+    const serializer = new XMLSerializer();
+    const svgString = serializer.serializeToString(clonedSvg);
+
+    // 3. Безопасное кодирование строки с кириллицей (размеры в "мм", названия профилей) в Base64
+    const utf8Bytes = new TextEncoder().encode(svgString);
+    const binaryString = Array.from(utf8Bytes, byte => String.fromCharCode(byte)).join("");
+    const base64Result = btoa(binaryString);
+
+    // 4. Возвращаем готовый Data URL, который можно вставлять в <img src="..."> или сохранять в базу
+    return `data:image/svg+xml;base64,${base64Result}`;
+}

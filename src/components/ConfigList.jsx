@@ -213,9 +213,9 @@ export default function ConfigList() {
                     </ModalHeader>
                     <ModalBody>
                         <div className={"flex justify-center pt-3"}>
-                            <div className={"flex-wrap sm:flex gap-4"}>
+                            {checkSashStatus(tree, glassId) ? "" :   <div className={"flex-wrap sm:flex gap-4"}>
                                 <div onClick={() => {
-                                setOpenImpostConfig(true)
+                                    setOpenImpostConfig(true)
                                 }} className={"flex gap-2 justify-start p-2 hover:bg-blue-700 cursor-pointer rounded-md"}>
                                     <div>
                                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
@@ -231,9 +231,35 @@ export default function ConfigList() {
                                         Разделение контура
                                     </div>
                                 </div>
+                            </div>}
+
+                            <div className={"flex-wrap sm:flex gap-4"}>
+                                <div onClick={() => {
+                                    setOpenSashConfig(true)
+                                }} className={"flex gap-2 justify-start p-2 hover:bg-blue-700 cursor-pointer rounded-md"}>
+                                    <div>
+
+                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g>
+                                                <rect width="30" height="30" fill="#FFFFFF" fillRule="evenodd"
+                                                      transform="translate(0 0)"/>
+                                                <rect width="5" height="30" fill="#E61240" fillRule="evenodd"
+                                                      transform="translate(0 0)"/>
+                                                <rect width="5" height="30" fill="#E61240" fillRule="evenodd"
+                                                      transform="translate(25 0)"/>
+                                                <rect width="30" height="5" fill="#E61240" fillRule="evenodd"
+                                                      transform="translate(0 0)"/>
+                                                <rect width="30" height="5" fill="#E61240" fillRule="evenodd"
+                                                      transform="translate(0 25)"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div className={"self-center"}>
+                                        {checkSashStatus(tree, glassId) ? "Настройка створки" : "Новая створка"}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <h5 className={"text-center text-xl"}>Разделение контура</h5>
                     </ModalBody>
                     <ModalFooter>
                         <div className={"flex justify-end w-full"}>
@@ -252,7 +278,7 @@ export default function ConfigList() {
 
                     </ModalHeader>
                     <ModalBody>
-                        <h5 className={"text-center text-xl"}>Разделение контура</h5>
+                        <h5 className={"text-center text-xl"}>Добавить импост</h5>
                         <div className={"flex justify-center pt-3"}>
 
                             <div className={"flex-wrap sm:flex gap-4"}>
@@ -295,12 +321,13 @@ export default function ConfigList() {
                                 </div>
                             </div>
                         </div>
-                        <h5 className={"text-center text-xl"}>Разделение контура</h5>
+
                     </ModalBody>
                     <ModalFooter>
                         <div className={"flex justify-end w-full"}>
                             <div className={"flex"}>
                                 <Button onClick={() => {
+                                   setOpenImpostConfig(false)
                                     dispatch(setConfigListOpen(false))
                                 }}>
                                     Закрыть
@@ -308,6 +335,13 @@ export default function ConfigList() {
                             </div>
                         </div>
                     </ModalFooter>
+                </Modal>
+                <Modal show={openSashConfig}>
+                    <ModalHeader></ModalHeader>
+                    <ModalBody>
+                            <ConfigSash config={!checkSashStatus(tree, glassId)} setOpenSashConfig={setOpenSashConfig} createSash={createSash}/>
+                    </ModalBody>
+                    <ModalFooter></ModalFooter>
                 </Modal>
 
             </div>

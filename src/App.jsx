@@ -10,6 +10,7 @@ import {connection} from "./Db.js";
 import SetForm from "./components/SetForm.jsx";
 import {Button, createTheme, ThemeProvider} from "flowbite-react";
 import DbTools from "./components/DbTools.jsx";
+import ColorForm from "./components/ColorForm.jsx";
 
 const tb = "CALCULATOR_4"
 await createBase(tb, 1)
@@ -141,17 +142,18 @@ function App() {
             <ThemeProvider theme={customTheme}>
                 <header className={"flex justify-center h-[60px] text-white px-4 bg-gray-950 shadow-md"}>
                     <nav className={"flex justify-between w-full gap-2"}>
-                        <div className={"w-full"}>
+                        <div className={"w-full hidden lg:block"}>
 
                         </div>
-                        <div className={"flex justify-between w-full"}>
+
+                        <div className={"sm:flex gap-2 hidden sm:visible justify-between w-full"}>
                             {navigation.map((el) => <div key={el} onClick={() => {
                                 dispatch(setPage(el))
                             }} className={`flex self-center hover:underline cursor-pointer hover:text-blue-400 ${page === el ? 'underline text-blue-400' : ''}`} >
                                 {el}
                             </div>)}
                         </div>
-                        <div className={"w-full justify-end flex"}>
+                        <div className={"w-full justify-end flex "}>
                             <div className={"self-center"}>
                               <DbTools/>
                             </div>
@@ -161,11 +163,15 @@ function App() {
 
 
                 </header>
-                <article className={"bg-gray-800"}>
-                    {page === "Главная" ? <div className={"flex justify-center w-full"}><Home/></div> : ""}
-                    {page === "Комплектующие" ? <Accessories/> : ""}
-                    {page === "Фурнитура" ? <HardwareForm/> : ""}
-                    {page === "Наборы" ? <SetForm/> : ""}
+                <article className={"bg-gray-800 flex justify-center"}>
+                    <div className={"container justify-center"}>
+                        {page === "Главная" ? <div className={"flex justify-center gap-8 w-full"}><Home/></div> : ""}
+                        {page === "Комплектующие" ? <Accessories/> : ""}
+                        {page === "Фурнитура" ? <HardwareForm/> : ""}
+                        {page === "Наборы" ? <SetForm/> : ""}
+                        {page === "Цвет" ? <ColorForm/> : ""}
+                    </div>
+
                 </article>
                 <footer className={"bg-gray-950 w-full h-100"}>
 

@@ -35,7 +35,7 @@ export default function WindowBuilder() {
     return <>
         <div className={"w-full relative z-20 mt-6 ml-4 flex justify-center bg-gray-800 shadow-xl shadow-gray-950 text-xl text-gray-50  "}>
             <div className={"w-full "}>
-                <div className={"p-4 bg-gray-700 w-full"}>Параметры {windowWidth}</div>
+                <div className={"p-4 bg-gray-700 w-full"}>Параметры</div>
                 <div className={"flex justify-between p-4 border-b-2 border-gray-500"}>
                     <div>
                         <Label htmlFor="width"><div className={"text-xl flex self-center text-gray-50"}>Ширина:</div></Label>

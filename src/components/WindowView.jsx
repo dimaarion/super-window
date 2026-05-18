@@ -231,6 +231,7 @@ export default function WindowView({
     return (
         <div className="w-full flex flex-col items-center p-4">
             <svg
+                id={"window-project"}
                 className="w-full max-h-[700px] overflow-visible"
                 viewBox={`0 0 ${fullW + 200} ${fullH + 200}`}
                 fill="none" xmlns="http://www.w3.org/2000/svg"

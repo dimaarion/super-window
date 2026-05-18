@@ -7,12 +7,17 @@ import {Select} from "flowbite-react";
 export default function ColorSelect(){
     const [colors, setColors] = useState([{}]);
     const windowColor = useSelector((state) => state.windowColor.value);
+    const defaultColor = [{
+        name: "Белый",
+        type:"white",
+        color:"white"
+    }]
     useEffect(() => {
 
         connection.select({
             from: "Colors"
         }).then((result) => {
-            setColors(result);
+            setColors(defaultColor.concat(result));
         });
 
     }, []);
