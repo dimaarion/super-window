@@ -14,6 +14,13 @@ import {glassId} from "./features/glassId.js";
 import {sashDirection} from "./features/sashDirection.js";
 import {page} from "./features/page.js";
 import {sashWidth} from "./features/sashWidth.js";
+import {pageList} from "./features/pageList.js";
+import {frameId} from "./features/frameId.js";
+import {sashId} from "./features/sashId.js";
+import {shtulpId} from "./features/shtulpId.js";
+import {completion} from "./features/completion.js";
+import {hardware} from "./features/hardware.js";
+import {windows} from "./features/windows.js";
 
 
 export default configureStore({
@@ -32,7 +39,14 @@ export default configureStore({
         glassId:glassId.reducer,
         sashDirection:sashDirection.reducer,
         page:page.reducer,
-        sashWidth:sashWidth.reducer
+        sashWidth:sashWidth.reducer,
+        pageList:pageList.reducer,
+        frameId:frameId.reducer,
+        sashId:sashId.reducer,
+        shtulpId:shtulpId.reducer,
+        completion:completion.reducer,
+        hardware:hardware.reducer,
+        windows:windows.reducer,
 
     },
 })

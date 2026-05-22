@@ -79,10 +79,85 @@
       "inside": 0,
       "manufacturer": "",
       "id": 5
+    },
+    {
+      "article": "СП 24",
+      "name": "Стеклопакет 24",
+      "category": "Стеклопакеты",
+      "width": 0,
+      "dearth": 24,
+      "grooveOffset": 0,
+      "unit": "м",
+      "noColor": 0,
+      "white": 0,
+      "both_sides": 0,
+      "outside": 0,
+      "inside": 0,
+      "manufacturer": "",
+      "id": 6
     }
   ],
-  "Colors": [],
-  "Window": [],
+  "Colors": [
+    {
+      "name": "sdsdvsdv",
+      "type": "outside",
+      "color": "color(display-p3 0.58561 0.135315 0.10349)",
+      "id": 1
+    },
+    {
+      "name": "sdvsd",
+      "type": "inside",
+      "color": "color(display-p3 0.606632 0.210143 0.405928)",
+      "id": 2
+    },
+    {
+      "name": "gerge",
+      "type": "",
+      "color": "color(display-p3 -1.92523e-7 3.60981e-8 0.60131)",
+      "id": 3
+    }
+  ],
+  "Window": [
+    {
+      "article": "Окно",
+      "name": "GreenEvolution",
+      "category": "GreenEvolution",
+      "system": "2к",
+      "width": 1500,
+      "height": 1500,
+      "color": "#ffffff",
+      "frameId": 0,
+      "sashId": 2,
+      "impostId": 3,
+      "shtulpId": 0,
+      "fillingId": 6,
+      "hardwareId": 0,
+      "accessories": [],
+      "price": 0,
+      "createdAt": "2026-05-22T22:15:21.978Z",
+      "updatedAt": "2026-05-22T22:15:21.978Z",
+      "image": "data:image/svg+xml;base64,PHN2ZyBpZD0id2luZG93LXByb2plY3QiIGNsYXNzPSJ3LWZ1bGwgbWF4LWgtWzcwMHB4XSBvdmVyZmxvdy12aXNpYmxlIiB2aWV3Qm94PSIwIDAgMTgyMCAxODIwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxpbWFnZSB4PSItMTUwIiB5PSItMTUwIiBocmVmPSIuL2ltZy9iZy13bmRvdy5wbmciIHdpZHRoPSIyMDcwIiBoZWlnaHQ9IjIwNzAiLz48ZyBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiMzMzQxNTUiIHN0cm9rZS13aWR0aD0iMiI+PHBhdGggZD0iTTAsMCBMMTYyMCwwIEwxNTYwLDYwIEw2MCw2MCBaIi8+PHBhdGggZD0iTTAsMTYyMCBMMTYyMCwxNjIwIEwxNTYwLDE1NjAgTDYwLDE1NjAgWiIvPjxwYXRoIGQ9Ik0wLDAgTDYwLDYwIEw2MCwxNTYwIEwwLDE2MjAgWiIvPjxwYXRoIGQ9Ik0xNjIwLDAgTDE1NjAsNjAgTDE1NjAsMTU2MCBMMTYyMCwxNjIwIFoiLz48L2c+PGc+PHJlY3QgeD0iNzY1IiB5PSI2MCIgd2lkdGg9IjkwIiBoZWlnaHQ9IjE1MDAiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iIzMzNDE1NSIgc3Ryb2tlLXdpZHRoPSIxIiBjbGFzcz0iY3Vyc29yLW1vdmUgaG92ZXI6YnJpZ2h0bmVzcy05NSB0cmFuc2l0aW9uLWFsbCIvPjxnPjxyZWN0IHg9IjYwIiB5PSI2MCIgd2lkdGg9IjcwNSIgaGVpZ2h0PSIxNTAwIiBmaWxsPSIjN0REM0ZDIiBmaWxsLW9wYWNpdHk9IjAuMiIgc3Ryb2tlPSIjOTRBM0I4IiBzdHJva2Utd2lkdGg9IjEiIGNsYXNzPSJjdXJzb3ItcG9pbnRlciBob3ZlcjpmaWxsLXNreS0xMDAgIi8+PC9nPjxnPjxyZWN0IHg9Ijg1NSIgeT0iNjAiIHdpZHRoPSI3MDUiIGhlaWdodD0iMTUwMCIgZmlsbD0iIzdERDNGQyIgZmlsbC1vcGFjaXR5PSIwLjIiIHN0cm9rZT0iIzk0QTNCOCIgc3Ryb2tlLXdpZHRoPSIxIiBjbGFzcz0iY3Vyc29yLXBvaW50ZXIgaG92ZXI6ZmlsbC1za3ktMTAwICIvPjxnIGNsYXNzPSJzYXNoLWNvbXBvbmVudCIgc3R5bGU9InBvaW50ZXItZXZlbnRzOiBub25lOyI+PGcgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjMzM0MTU1IiBzdHJva2Utd2lkdGg9IjEuNSI+PHBhdGggZD0iTTgzNiw0MSBMMTU3OSw0MSBMMTUxMSwxMDkgTDkwNCwxMDkgWiIvPjxwYXRoIGQ9Ik04MzYsMTU3OSBMMTU3OSwxNTc5IEwxNTExLDE1MTEgTDkwNCwxNTExIFoiLz48cGF0aCBkPSJNODM2LDQxIEw5MDQsMTA5IEw5MDQsMTUxMSBMODM2LDE1NzkgWiIvPjxwYXRoIGQ9Ik0xNTc5LDQxIEwxNTExLDEwOSBMMTUxMSwxNTExIEwxNTc5LDE1NzkgWiIvPjwvZz48cmVjdCB4PSI5MDQiIHk9IjEwOSIgd2lkdGg9IjYwNyIgaGVpZ2h0PSIxNDAyIiBmaWxsPSIjN0REM0ZDIiBmaWxsLW9wYWNpdHk9IjAuNCIgc3Ryb2tlPSIjOTRBM0I4IiBzdHJva2Utd2lkdGg9IjAuNSIvPjxnIGZpbGw9IiNDQkQ1RTEiIHN0cm9rZT0iIzQ3NTU2OSIgc3Ryb2tlLXdpZHRoPSIxIj48cmVjdCB4PSIxNTczIiB5PSIxMDEiIHdpZHRoPSIxMiIgaGVpZ2h0PSI0NSIgcng9IjEiLz48cmVjdCB4PSIxNTczIiB5PSIxNDc0IiB3aWR0aD0iMTIiIGhlaWdodD0iNDUiIHJ4PSIxIi8+PC9nPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY0NzQ4YiIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1kYXNoYXJyYXk9IjYsNCIgb3BhY2l0eT0iMC42Ij48cGF0aCBkPSJNMTUxMSwxMDkgJiN4QTsgICAgICAgICAgICAgICAgICAgICAgICAgIEw5MDQsODEwICYjeEE7ICAgICAgICAgICAgICAgICAgICAgICAgICBMMTUxMSwxNTExIi8+PHBhdGggZD0iTTkwNCwxNTExIEwxMjA3LjUsMTA5IEwxNTExLDE1MTEiLz48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODcwLCA4MTApIj48cmVjdCB4PSItMTUiIHk9Ii0xOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjcwIiByeD0iMiIgZmlsbD0iI0Y4RkFGQyIgc3Ryb2tlPSIjNDc1NTY5IiBzdHJva2Utd2lkdGg9IjEiLz48cmVjdCB4PSItMTAiIHk9IjUiIHdpZHRoPSIyMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyIiBmaWxsPSIjRjhGQUZDIiBzdHJva2U9IiM0NzU1NjkiIHN0cm9rZS13aWR0aD0iMSIvPjwvZz48L2c+PC9nPjwvZz48ZyBmaWxsPSIjNjQ3NDhiIiBzdHlsZT0iZm9udC1zaXplOiA2MHB4OyBmb250LXdlaWdodDogNTAwOyBmb250LWZhbWlseTogbW9ub3NwYWNlOyI+PGcgY2xhc3M9ImRpbWVuc2lvbnMtYm90dG9tIj48Zz48bGluZSB4MT0iNjAiIHkxPSIxNjgwIiB4Mj0iNzY1IiB5Mj0iMTY4MCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEiLz48bGluZSB4MT0iNTYiIHkxPSIxNjg0IiB4Mj0iNjQiIHkyPSIxNjc2IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIvPjxsaW5lIHgxPSI3NjEiIHkxPSIxNjg0IiB4Mj0iNzY5IiB5Mj0iMTY3NiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSI0MTIuNSIgeT0iMTY3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgc3R5bGU9ImZvbnQtc2l6ZTogNTBweDsgZmlsbDogcmdiKDI1NSwgMjU1LCAyNTUpOyBmb250LXdlaWdodDogNjAwOyI+NjQ1PC90ZXh0PjwvZz48Zz48bGluZSB4MT0iODU1IiB5MT0iMTY4MCIgeDI9IjE1NjAiIHkyPSIxNjgwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMSIvPjxsaW5lIHgxPSI4NTEiIHkxPSIxNjg0IiB4Mj0iODU5IiB5Mj0iMTY3NiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz48bGluZSB4MT0iMTU1NiIgeTE9IjE2ODQiIHgyPSIxNTY0IiB5Mj0iMTY3NiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIxMjA3LjUiIHk9IjE2NzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHN0eWxlPSJmb250LXNpemU6IDUwcHg7IGZpbGw6IHJnYigyNTUsIDI1NSwgMjU1KTsgZm9udC13ZWlnaHQ6IDYwMDsiPjY0NTwvdGV4dD48L2c+PC9nPjxnIGNsYXNzPSJkaW1lbnNpb25zLXJpZ2h0Ij48Zz48bGluZSB4MT0iMTY4MCIgeTE9IjYwIiB4Mj0iMTY4MCIgeTI9IjE1NjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+PGxpbmUgeDE9IjE2NzYiIHkxPSI2NCIgeDI9IjE2ODQiIHkyPSI1NiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz48bGluZSB4MT0iMTY3NiIgeTE9IjE1NjQiIHgyPSIxNjg0IiB5Mj0iMTU1NiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIxNjgwIiB5PSI4NDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJoYW5naW5nIiB0cmFuc2Zvcm09InJvdGF0ZSg5MCwgMTY5NSwgODEwKSIgc3R5bGU9ImZvbnQtc2l6ZTogNTBweDsgZmlsbDogcmdiKDI1NSwgMjU1LCAyNTUpOyBmb250LXdlaWdodDogNjAwOyI+MTM4MDwvdGV4dD48L2c+PC9nPjwvZz48ZyBmaWxsPSIjMWUyOTNiIiBzdHlsZT0iZm9udC1zaXplOiA2MHB4OyBmb250LXdlaWdodDogNzAwOyI+PHRleHQgc3R5bGU9ImZvbnQtc2l6ZTogNTBweDsgZmlsbDogcmdiKDI1NSwgMjU1LCAyNTUpOyBmb250LXdlaWdodDogNjAwOyIgeD0iODEwIiB5PSIxNzgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7QqNC40YDQuNC90LA6IDE1MDAg0LzQvDwvdGV4dD48dGV4dCBzdHlsZT0iZm9udC1zaXplOiA1MHB4OyBmaWxsOiByZ2IoMjU1LCAyNTUsIDI1NSk7IGZvbnQtd2VpZ2h0OiA2MDA7IiB4PSIxNzgwIiB5PSI4MTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHRyYW5zZm9ybT0icm90YXRlKDkwLCAxNzgwLCA4MTApIj7QktGL0YHQvtGC0LA6IDE1MDAg0LzQvDwvdGV4dD48L2c+PC9zdmc+",
+      "tree": {
+        "id": 0.6686421378968956,
+        "type": "split",
+        "splitType": "vertical",
+        "ratio": 0.5,
+        "child1": {
+          "id": 0.22911077481416986,
+          "type": "glass"
+        },
+        "child2": {
+          "id": 0.2864816977552075,
+          "type": "glass",
+          "dir": "right",
+          "hasSash": true
+        },
+        "dir": "right"
+      },
+      "count": 1,
+      "id": 1
+    }
+  ],
   "Hardware": [
     {
       "name": "MACO",
@@ -269,6 +344,15 @@
       "distance": 0,
       "indent": 0,
       "id": 18
+    },
+    {
+      "name": "",
+      "accessoriesId": 1,
+      "count": 1,
+      "specificationId": [],
+      "distance": 0,
+      "indent": 0,
+      "id": 19
     }
   ],
   "SetSpecification": []

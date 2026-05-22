@@ -1,19 +1,21 @@
 import './App.css'
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {createBase, select} from "./action/index.js";
+import {createBase} from "./action/index.js";
 import Home from "./components/Home.jsx";
 import Accessories from "./components/Accessories.jsx";
 import {setPage} from "./features/page.js";
 import HardwareForm from "./components/HardwareForm.jsx";
 import {connection} from "./Db.js";
 import SetForm from "./components/SetForm.jsx";
-import {Button, createTheme, ThemeProvider} from "flowbite-react";
-import DbTools from "./components/DbTools.jsx";
+import {createTheme, ThemeProvider} from "flowbite-react";
 import ColorForm from "./components/ColorForm.jsx";
+import {NAMEDB} from "./action/index.js";
 
-const tb = "CALCULATOR_4"
-await createBase(tb, 1)
+
+//await deleteDatabase()
+await createBase()
+//await connection.terminate();
 
 function App() {
     const page = useSelector(state => state.page.value);
@@ -24,11 +26,11 @@ function App() {
 
 ///insertTable("Colors",{name:"Белый",color: "#ffffff"});
 
-        connection.getDbSchema(tb).then((res) => {
+        connection.getDbSchema(NAMEDB).then((res) => {
             //   console.log(res)
         })
 
-        connection.getDbSchema(tb).then((res) => {
+        connection.getDbSchema(NAMEDB).then((res) => {
             console.log(res)
         })
     }, []);
@@ -153,10 +155,7 @@ function App() {
                                 {el}
                             </div>)}
                         </div>
-                        <div className={"w-full justify-end flex "}>
-                            <div className={"self-center"}>
-                              <DbTools/>
-                            </div>
+                        <div className={"w-full hidden lg:block"}>
 
                         </div>
                     </nav>

@@ -1,4 +1,4 @@
-import {useMemo} from "react";
+import {useEffect, useMemo} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setImpostConfigOpen} from "../features/impostConfigOpen.js";
 import {setImpostPosition} from "../features/ImpostPosition.js";
@@ -32,6 +32,10 @@ export default function WindowView({
     const MIN_FONT_SIZE = 20;
     const MAX_FONT_SIZE = 60;
     const offset = 120;
+
+    useEffect(() => {
+        console.log(tree)
+    }, [tree]);
 // Расчет
     const dynamicFontSize = Math.min(
         MAX_FONT_SIZE,

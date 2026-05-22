@@ -1,7 +1,7 @@
 import {connection} from "../Db.js";
 
-const NAMEDB = "CALCULATOR_4"
-const VERSIONDB = 1
+export const NAMEDB = "CALCULATOR"
+export const VERSIONDB = 2
 
 export async function createBase() {
     const tbColors = {
@@ -13,6 +13,7 @@ export async function createBase() {
             color: { dataType: "string" },
         }
     };
+
     const tblAccessories = {
         name: "Accessories",
         columns: {
@@ -32,27 +33,31 @@ export async function createBase() {
             manufacturer: { dataType: "string" }
         }
     };
+
     const tblWindow = {
         name: "Window",
         columns: {
             id: { primaryKey: true, autoIncrement: true },
-            article: { dataType: "string", notNull: true },     // Артикул готового окна
-            name: { dataType: "string", notNull: true },        // Название (например, "Окно балконное")
-            width: { dataType: "number", notNull: true },       // Ширина
-            height: { dataType: "number", notNull: true },      // Высота
-            color: { dataType: "string", notNull: true },                      // Цвет профиля/рамы
-            system: { dataType: "string", notNull: true },      // Система (Rehau, ADOPEN, Salamander)
-            category: { dataType: "string", notNull: true },    // Категория (Балконное, Панорамное, Дверь)
-            frameId: { dataType: "number" },                    // Рама
-            sashId: { dataType: "number" },                     // Створка
-            impostId: { dataType: "number" },                   // Импост
-            shtulpId: { dataType: "number" },                   // Штульп
-            fillingId: { dataType: "number" },                  // Заполнение (стеклопакет/панель)
-            hardwareId: { dataType: "number" },                 // Комплект фурнитуры (из таблицы Hardware)
-            accessories: { dataType: "array" },                 // Доп. комплектующие (ручки, замки, петли)
-            price: { dataType: "number" },                      // Итоговая цена
-            createdAt: { dataType: "date_time" },               // Дата создания
-            updatedAt: { dataType: "date_time" }                // Дата обновления
+            article: { dataType: "string", notNull: true },
+            name: { dataType: "string", notNull: true },
+            width: { dataType: "number", notNull: true },
+            height: { dataType: "number", notNull: true },
+            color: { dataType: "string", notNull: true },
+            system: { dataType: "string", notNull: true },
+            category: { dataType: "string", notNull: true },
+            frameId: { dataType: "number" },
+            sashId: { dataType: "number" },
+            impostId: { dataType: "number" },
+            shtulpId: { dataType: "number" },
+            fillingId: { dataType: "number" },
+            hardwareId: { dataType: "number" },
+            accessories: { dataType: "array" },
+            price: { dataType: "number" },
+            createdAt: { dataType: "date_time" },
+            updatedAt: { dataType: "date_time" },
+            image: { dataType: "string" },
+            tree: { dataType: "object" },
+            count: { dataType: "number",default: 1 },
         }
     };
 
@@ -77,6 +82,7 @@ export async function createBase() {
             indent:{dataType: "number", default: 0}
         }
     };
+
     const tblSetSpecification = {
         name: "SetSpecification",
         columns: {
@@ -86,8 +92,7 @@ export async function createBase() {
         }
     };
 
-
-
+    // ГЛАВНОЕ ИЗМЕНЕНИЕ: Структура объекта базы данных
     let db = {
         name: NAMEDB,
         version: VERSIONDB,
@@ -101,11 +106,17 @@ export async function createBase() {
         ]
     }
 
-
-   await connection.initDb(db);
+    try {
+        const isDbCreated = await connection.initDb(db);
+        if (isDbCreated) {
+            console.log("База данных создана успешно");
+        } else {
+            console.log("База данных успешно обновлена до версии", VERSIONDB);
+        }
+    } catch (error) {
+        console.error("Ошибка при инициализации/обновлении БД:", error);
+    }
 }
-
-
 
 export async function exportDb() {
     const schema = await connection.getDbSchema(NAMEDB);
@@ -150,7 +161,6 @@ export async function importDb(file) {
 
 }
 
-
 export async function deleteDatabase() {
     try {
         await connection.dropDb();
@@ -159,7 +169,6 @@ export async function deleteDatabase() {
         console.error("Ошибка при удалении базы:", ex);
     }
 }
-
 
 export async function insertTable(tbName, value){
     return  await connection.insert({
@@ -187,7 +196,6 @@ export async function updateTb(tbName,value, id){
     });
 }
 
-
 export async function select(tbName){
    return  await connection.select({
        from: tbName
@@ -202,7 +210,6 @@ export async function whereId(tbName,id){
         }
     });
 }
-
 
 export function parseNan(el){
     return !isNaN(el)?el:0
@@ -221,6 +228,7 @@ export /**
  * @param {SVGElement} svgElement - Ссылка на ваш SVG в DOM
  * @4026 {Promise<string>} - Возвращает строку в формате data:image/png;base64...
  */
+
 async function svgToPng(svgElement) {
     return new Promise((resolve, reject) => {
         // 1. Получаем XML-код SVG и создаем Blob URL
@@ -265,8 +273,6 @@ async function svgToPng(svgElement) {
         image.src = blobURL;
     });
 }
-
-
 
 export function exportSvgToBase64(svgElement) {
     // 1. Клонируем SVG, чтобы случайно не изменить оригинал в интерфейсе

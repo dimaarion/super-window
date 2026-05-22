@@ -62,6 +62,11 @@ display: block;
     visibility: hidden;
 }
 
+.text-parent:hover .text-item{
+    background: #fffbeb;
+    fill: #3b495c;
+}
+
 /**{
     border: solid 1px #dc0e23;
 }*/
