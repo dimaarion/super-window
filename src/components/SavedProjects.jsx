@@ -24,7 +24,15 @@ export default function SavedProjects(){
                     </div>
                         <div>
                             <div>{el.name}</div>
+                            <div>{el.article}</div>
+                            <div>{el.system}</div>
+                            <div>{el.category}</div>
+                            <div><span>{el.width} x {el.height} мм.</span></div>
+                            <div>Цена: {el.price}</div>
                         </div>
+                    <div className={"flex"}>
+                        <div className={"self-center flex"}>Количество {el.count}</div>
+                    </div>
                 </div>)}
             </div>
             <div>
