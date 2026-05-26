@@ -13,7 +13,7 @@ import {setSashId} from "../features/sashId.js";
 import {setShtulpId} from "../features/shtulpId.js";
 import {setCompletionId} from "../features/completion.js";
 import {setHardwareId} from "../features/hardware.js";
-import {setWindowImpostId} from "../features/windows.js";
+import {setWindowFramePrice, setWindowImpostId} from "../features/windows.js";
 
 export default function WindowBuilder() {
 
@@ -41,11 +41,16 @@ export default function WindowBuilder() {
        select("Hardware").then((res) => {
            setHardwareList(res)
         })
-    }, []);
+        whereId("Accessories", frameId).then((res) => {
+            const el = res[0]
+            dispatch(setFrameId(el.id))
+            dispatch(setProfileHeight(el.width))
+        })
+    }, [frameId,dispatch]);
 
     return <>
-        <div className={"w-full relative z-20 mt-6 ml-4 flex justify-center bg-gray-800 shadow-xl shadow-gray-950 text-xl text-gray-50  "}>
-            <div className={"w-full "}>
+        <div className={"w-full relative z-20 mt-6 ml-4 flex justify-center bg-gray-800 shadow-xl shadow-gray-950 text-xl text-gray-50"}>
+            <div className={"w-full"}>
                 <div className={"p-4 bg-gray-700 w-full"}>Параметры</div>
                 <div className={"flex justify-between p-4 border-b-2 border-gray-500"}>
                     <div>
@@ -85,6 +90,7 @@ export default function WindowBuilder() {
                                 const el = res[0]
                                 dispatch(setFrameId(el.id))
                                 dispatch(setProfileHeight(el.width))
+                                dispatch(setWindowFramePrice(el.white))
                             })
                         }} id="ramen" required>
                             {list.map((el) => <option key={el.id + 'ramen'} value={el.id}>{el.article}</option>)}

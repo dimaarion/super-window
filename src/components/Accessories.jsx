@@ -13,7 +13,7 @@ export default function Accessories() {
         width: 0,
         dearth: 0,
         grooveOffset: 0,
-        unit: "мм",
+        unit: "м",
         noColor: 0,
         white: 0,
         both_sides: 0,
@@ -52,7 +52,8 @@ export default function Accessories() {
         })
     }, [list]);
 
-    const selectData = ["мм", "шт", "м"]
+
+    const selectData = ["м","шт","м2"]
     const uniqueCategory = Array.from(
         new Map(list.map(el => [el.category, el])).values()
     );

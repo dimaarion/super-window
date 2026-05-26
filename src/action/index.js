@@ -42,7 +42,7 @@ export async function createBase() {
             name: { dataType: "string", notNull: true },
             width: { dataType: "number", notNull: true },
             height: { dataType: "number", notNull: true },
-            color: { dataType: "string", notNull: true },
+            color: { dataType: "number", default: 1 },
             system: { dataType: "string", notNull: true },
             category: { dataType: "string", notNull: true },
             frameId: { dataType: "number" },
@@ -92,6 +92,15 @@ export async function createBase() {
         }
     };
 
+    const tbSettings = {
+        name: "Settings",
+        columns: {
+            id: { primaryKey: true, autoIncrement: true },
+            monetary_unit:{ dataType: "string", default: "ru" },
+        }
+
+    }
+
     // ГЛАВНОЕ ИЗМЕНЕНИЕ: Структура объекта базы данных
     let db = {
         name: NAMEDB,
@@ -102,7 +111,8 @@ export async function createBase() {
             tblWindow,
             tblHardware,
             tblHardwareSet,
-            tblSetSpecification
+            tblSetSpecification,
+            tbSettings
         ]
     }
 
@@ -130,30 +140,54 @@ export async function exportDb() {
     const json = JSON.stringify(exportData, null, 2);
     const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = "indexeddb_export.json";
     a.click();
+
+
+}
+
+
+export async function saveFile() {
+
 }
 
 // 📥 Импорт базы из JSON
 export async function importDb(file) {
     const text = await file.text();
     const data = JSON.parse(text);
+    const restoreDates = (obj) => {
+        const isoDateRegExp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+
+        for (const key in obj) {
+            if (typeof obj[key] === 'string' && isoDateRegExp.test(obj[key])) {
+                obj[key] = new Date(obj[key]);
+            }
+        }
+        return obj;
+    };
 
     for (const [tableName, rows] of Object.entries(data)) {
         for (const row of rows) {
+            const preparedRow = restoreDates({ ...row });
+// Если в строке есть дата, парсим её обратно в формат Date для JsStore
+            if (preparedRow.createdAt) {
+                preparedRow.createdAt = new Date(preparedRow.createdAt);
+            }
+            if (preparedRow.updatedAt) {
+                preparedRow.updatedAt = new Date(preparedRow.updatedAt);
+            }
             const updated = await connection.update({
                 in: tableName,
-                set: row,
-                where: { id: row.id }
+                set: preparedRow,
+                where: { id: preparedRow.id }
             });
 
             if (updated === 0) {
                 await connection.insert({
                     into: tableName,
-                    values: [row]
+                    values: [preparedRow]
                 });
             }
         }
@@ -216,11 +250,16 @@ export function parseNan(el){
 }
 
 export function parseNum(num){
-    num = num.replace(/A-Za-z|А-Яа-я/g,'')
-    num = parseInt(num);
-    num = isNaN(num) ? 0 : num;
-    num = Math.min(num,10000)
-    return num
+    if(Number.isInteger(num)){
+        return num;
+    }else {
+        num = num.replace(/A-Za-z|А-Яа-я/g,'')
+        num = parseInt(num);
+        num = isNaN(num) ? 0 : num;
+        num = Math.min(num,10000)
+        return num
+    }
+
 }
 
 export /**

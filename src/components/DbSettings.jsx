@@ -1,8 +1,7 @@
-import TopPanel from "./TopPanel.jsx";
 import DbTools from "./DbTools.jsx";
 import LeftPanel from "./LeftPanel.jsx";
 
-export default function DbSettings({setPageList, pageList}) {
+export default function DbSettings() {
     return <>
         <div className={"w-full"}>
             <div className={"mt-6"}>

@@ -3,11 +3,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {setImpostConfigOpen} from "../features/impostConfigOpen.js";
 import {setImpostPosition} from "../features/ImpostPosition.js";
 import {setNode} from "../features/node.js";
-import {setImpostId} from "../features/impostId.js";
 import {setConfigListOpen} from "../features/configListOpen.js";
 import Sash from "./Sash.jsx";
 import {setGlassId} from "../features/glassId.js";
 import DragGuide from "./DragGuide.jsx";
+import {setWindowImpost} from "../features/windows.js";
 
 /**
  * WindowView - Компонент динамического чертежа окна.
@@ -103,7 +103,7 @@ export default function WindowView({
 
     // Разделение стекла на два сегмента
     const splitSegment = (targetId) => {
-        dispatch(setImpostId(targetId))
+        dispatch(setWindowImpost(targetId))
         dispatch(setConfigListOpen(true))
     };
 

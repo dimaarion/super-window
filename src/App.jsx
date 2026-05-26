@@ -37,6 +37,13 @@ function App() {
 
     const navigation = ["Главная", "Комплектующие", "Фурнитура", "Наборы", "Цвет"]
     const customTheme = createTheme({
+        toast:{
+            "root":{
+                "base": "absolute top-5 right-5 text-green-500 text-xl",
+                "closed": "opacity-0 ease-out"
+            }
+
+        },
         modal:{
             "content": {
                 "base": "relative  h-full w-full p-4 rounded-lg md:h-auto",

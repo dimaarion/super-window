@@ -17,8 +17,12 @@ export default function Home() {
         return <DbSettings />
     }else if(pageList === "saved-project"){
         return <SavedProjects />
+    }else if(pageList === "update-project"){
+        return <CreateProject  />
     } else {
-       return <LeftPanel />
+       return <div className={"flex justify-between"}>
+           <LeftPanel />
+       </div>
     }
 
 

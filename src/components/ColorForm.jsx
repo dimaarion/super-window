@@ -14,6 +14,7 @@ export default function ColorForm(){
     const [value, setValue] = useState(defaultValue);
     const[colors,setColors]=useState([{}]);
     const typeColors = [
+        {type:"white",name:'Без ламинации'},
         {type:"both_sides",name:'Двойная ламинация'},
         {type:"outside",name:'Наружная ламинация'},
         {type:"inside",name:'Внутренняя ламинация'}

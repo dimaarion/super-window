@@ -31,7 +31,9 @@ const Sash = ({
     return (
         <g className="sash-component" style={{ pointerEvents: 'none' }}>
             {/* ПРОФИЛЬ СТВОРКИ */}
-            <g fill={color} stroke="#334155" strokeWidth="1.5">
+
+            <g  fill={color} stroke="#000" strokeWidth="1.5">
+
                 <path d={`M${sx},${sy} L${sx + sw},${sy} L${sx + sw - sashWidth},${sy + sashWidth} L${sx + sashWidth},${sy + sashWidth} Z`} />
                 <path d={`M${sx},${sy + sh} L${sx + sw},${sy + sh} L${sx + sw - sashWidth},${sy + sh - sashWidth} L${sx + sashWidth},${sy + sh - sashWidth} Z`} />
                 <path d={`M${sx},${sy} L${sx + sashWidth},${sy + sashWidth} L${sx + sashWidth},${sy + sh - sashWidth} L${sx},${sy + sh} Z`} />

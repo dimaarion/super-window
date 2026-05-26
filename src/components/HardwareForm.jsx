@@ -8,23 +8,23 @@ export default function HardwareForm() {
         name: "",
         setId: []
     }
-    const defaultHardwareSet = {name: "", accessoriesId: 1, count: 1, specificationId: [], distance: 0, indent: 0}
-    const [list, setList] = useState([{}]);
+
+
     const [hardwareList, setHardwareList] = useState([{}]);
-    const [id, setId] = useState(1);
+
     const [arrId, setArrId] = useState({id:0,arr:[]});
     const [hardware, setHardware] = useState(defaultHardware);
     const [hardwareSet, setHardwareSet] = useState([{}]);
-    const [createFurn, setCreateFurn] = useState(false);
+
 
     const [openModal, setOpenModal] = useState(false);
-    const [element, setElement] = useState({});
 
-    useEffect(() => {
+
+   /* useEffect(() => {
         select("Accessories").then((res) => {
             setList(res)
         })
-    }, []);
+    }, [setList]);*/
 
     useEffect(() => {
         select("Hardware").then((res) => {
@@ -34,10 +34,12 @@ export default function HardwareForm() {
 
 
     useEffect(() => {
+        if(!arrId.id)return
+        console.log(arrId);
         connection.update({
             in: "Hardware",
             set: {
-                setId: hardware.setId,
+                setId: hardware?.setId,
             },
             where: {
                 id: arrId.id,
@@ -54,7 +56,7 @@ export default function HardwareForm() {
         }).then((res)=>{
             const h = res[0]
             setHardware(h)
-            setArrId({id:h.id,arr:h.setId})
+            setArrId({id:h?.id,arr:h?.setId})
         })
     }, []);
 
@@ -86,7 +88,7 @@ export default function HardwareForm() {
                         </div>
                         <div className={"p-3"}>
                             {hardwareList.map((el) => <div onClick={()=>{
-                                setArrId({id:el.id,arr:el.setId})
+                                setArrId({id:el.id,arr:el?.setId})
                                 connection.select({
                                     from: "Hardware",
                                     where: {
@@ -108,7 +110,8 @@ export default function HardwareForm() {
                                 <h2 className={"text-center p-2"}>Наборы</h2>
                             </div>
                             <div onClick={() => {
-                                setHardware({name: hardware.name, setId: [...hardware.setId, 0]})
+                                let h = hardware?.setId
+                                setHardware({name: hardware.name, setId: [...h, 0]})
                             }}
                                  data-tooltip="Добавить набор"
                                  className="group relative flex text-3xl self-center items-center justify-center mt-[-2px] w-10 text-gray-400 cursor-pointer"
@@ -121,11 +124,11 @@ export default function HardwareForm() {
                         </div>
                         <div className={"overflow-auto h-[500px] mb-6"}>
                             <div className={"p-3"}>
-                                {hardware.setId.map((idh, j) => <div key={j} className={"text-start flex px-4"}>
+                                {hardware?.setId?.map((idh, j) => <div key={j} className={"text-start flex px-4"}>
                                     <div>
                                         <Select color={"myColor"} value={idh} onChange={(e) => {
                                             setHardware({
-                                                name: hardware.name, setId: hardware.setId.map((er, g) => {
+                                                name: hardware.name, setId: hardware?.setId.map((er, g) => {
                                                     if (j === g) {
                                                         er = parseInt(e.target.value)
                                                     }

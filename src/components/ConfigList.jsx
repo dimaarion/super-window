@@ -9,7 +9,7 @@ import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "flowbite-react
 
 export default function ConfigList() {
     const dispatch = useDispatch()
-    const impostId = useSelector((state) => state.impostId.value)
+    const impostId = useSelector((state) => state.windows.value.impost)
     const tree = useSelector(state => state.tree.value);
     const impostWidth = useSelector(state => state.impostWidth.value);
     const glassId = useSelector((state) => state.glassId.value)

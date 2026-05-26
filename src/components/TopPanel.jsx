@@ -1,8 +1,22 @@
 import {Button, Label, Modal, ModalBody, ModalFooter, ModalHeader, TextInput} from "flowbite-react";
-import {exportSvgToBase64, insertTable} from "../action/index.js";
+import {exportSvgToBase64, insertTable, updateTb} from "../action/index.js";
 import {setPageList} from "../features/pageList.js";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
+import {setTree} from "../features/tree.js";
+import {
+    setWindowArticle,
+    setWindowCategory,
+    setWindowColor, setWindowImpostId,
+    setWindowName,
+    setWindowSystem
+} from "../features/windows.js";
+import {setWindowWidth} from "../features/windowWidth.js";
+import {setWindowHeight} from "../features/windowHeight.js";
+import {setFrameId} from "../features/frameId.js";
+import {setSashId} from "../features/sashId.js";
+import {setShtulpId} from "../features/shtulpId.js";
+import {setCompletionId} from "../features/completion.js";
 
 
 export default function TopPanel(){
@@ -10,7 +24,6 @@ export default function TopPanel(){
     const pageList = useSelector(state => state.pageList.value)
     const windowWidth = useSelector((state) => state.windowWidth.value);
     const windowHeight = useSelector((state) => state.windowHeight.value);
-    const windowColor = useSelector((state) => state.windowColor.value);
     const frameId = useSelector((state) => state.frameId.value);
     const sashId = useSelector((state) => state.sashId.value);
     const shtulpId = useSelector((state) => state.shtulpId.value);
@@ -20,28 +33,29 @@ export default function TopPanel(){
     const windows = useSelector(state => state.windows.value);
 
 
+
     const [openModal, setOpenModal] = useState(false);
     const [save, setSave] = useState(false);
 
     let defaultValue = {
-        article: "",
-        name: "",
-        category: "",
-        system: "",
+        article: windows.article,
+        name: windows.name,
+        category: windows.category,
+        system: windows.system,
         width: windowWidth,
         height: windowHeight,
-        color: windowColor,
+        color: windows.color,
         frameId: frameId,
         sashId: sashId,
         impostId:windows.impostId,
         shtulpId: shtulpId,
         fillingId: completion.id,
         hardwareId: hardware.id,
-        accessories: [],
-        price: 0,
+        accessories: windows.accessories,
+        price: windows.price,
         createdAt: new Date(),
         updatedAt: new Date(),
-        image: "",
+        image: windows.image,
         tree: tree,
         count: windows.count,
     }
@@ -70,6 +84,20 @@ export default function TopPanel(){
             </div>
             <div onClick={() => {
                 dispatch(setPageList("new-project"));
+                dispatch(setTree({ id: 'root', type: 'glass'}));
+                dispatch(setWindowArticle(""));
+                dispatch(setWindowName(""));
+                dispatch(setWindowCategory(""));
+                dispatch(setWindowSystem(""));
+                dispatch(setWindowSystem(""));
+                dispatch(setWindowColor(1));
+                dispatch(setWindowWidth(1500));
+                dispatch(setWindowHeight(1500));
+                dispatch(setFrameId(1));
+                dispatch(setSashId(1));
+                dispatch(setShtulpId(1));
+                dispatch(setWindowImpostId(1));
+                dispatch(setCompletionId(1));
             }}
                  className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center " + `${pageList === "new-project" ? "bg-gray-800" : ""}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" fill="currentColor"
@@ -78,7 +106,9 @@ export default function TopPanel(){
                           d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
                 </svg>
             </div>
-            <div className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center"}>
+            <div onClick={()=>{
+                dispatch(setPageList("saved-project"));
+            }} className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center"}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                      className="bi bi-folder-fill" viewBox="0 0 16 16">
                     <path
@@ -109,7 +139,7 @@ export default function TopPanel(){
                 </svg>
             </div>
 
-            {pageList === "new-project"?<div className={"p-2 cursor-pointer border-l-2 border-gray-500 w-full flex justify-center"}>
+            {pageList === "new-project" || pageList === "update-project" ?<div className={"p-2 cursor-pointer border-l-2 border-gray-500 w-full flex justify-center"}>
                 <Button onClick={() => {
                     setOpenModal(true)
                     setSave(false)
@@ -128,23 +158,23 @@ export default function TopPanel(){
                 <div className={"p-4 grid grid-cols-2 gap-4"}>
                     <div>
                         <Label className={"text-gray-50 pl-4 text-xl"} htmlFor={"name"}>Название</Label>
-                        <TextInput onChange={handleChange} name={"name"} id={"name"} color={`${save && !value.name?"failure":"myColor"}`} type={"text"}/>
+                        <TextInput onChange={handleChange} value={value.name} name={"name"} id={"name"} color={`${save && !value.name?"failure":"myColor"}`} type={"text"}/>
                     </div>
                     <div>
                         <Label className={"text-gray-50 pl-4 text-xl"} htmlFor={"article"}>Конфигурация</Label>
-                        <TextInput onChange={handleChange} name={"article"} id={"article"} color={`${save && !value.article?"failure":"myColor"}`} type={"text"}/>
+                        <TextInput onChange={handleChange} value={value.article} name={"article"} id={"article"} color={`${save && !value.article?"failure":"myColor"}`} type={"text"}/>
                     </div>
                     <div>
                         <Label className={"text-gray-50 pl-4 text-xl"} htmlFor={"system"}>Система</Label>
-                        <TextInput onChange={handleChange} name={"system"} id={"system"} color={`${save && !value.system?"failure":"myColor"}`} type={"text"}/>
+                        <TextInput onChange={handleChange} value={value.system} name={"system"} id={"system"} color={`${save && !value.system?"failure":"myColor"}`} type={"text"}/>
                     </div>
                     <div>
                         <Label className={"text-gray-50 pl-4 text-xl"} htmlFor={"category"}>Категория</Label>
-                        <TextInput onChange={handleChange} name={"category"} id={"category"} color={`${save && !value.category?"failure":"myColor"}`} type={"text"}/>
+                        <TextInput onChange={handleChange} value={value.category} name={"category"} id={"category"} color={`${save && !value.category?"failure":"myColor"}`} type={"text"}/>
                     </div>
                     <div>
                         <Label className={"text-gray-50 pl-4 text-xl"} htmlFor={"count"}>Количество</Label>
-                        <TextInput onChange={handleChange} value={windows.count} name={"count"} id={"count"} color={`${save && !value.category?"failure":"myColor"}`} type={"number"}/>
+                        <TextInput onChange={handleChange} value={value.count} name={"count"} id={"count"} color={`${save && !value.category?"failure":"myColor"}`} type={"number"}/>
                     </div>
                 </div>
             </ModalBody>
@@ -155,7 +185,12 @@ export default function TopPanel(){
                         <div className={"flex"}>
                             <Button onClick={()=>{
                                 if(value.name && value.category && value.article && value.article) {
-                                    insertTable("Window",value)
+                                    if(pageList === "new-project") {
+                                        insertTable("Window",value)
+                                    }
+                                    if(pageList === "update-project"){
+                                        updateTb("Window",value,windows.id)
+                                    }
                                     setOpenModal(false)
                                 }
 
