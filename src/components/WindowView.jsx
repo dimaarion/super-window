@@ -1,13 +1,14 @@
-import {useEffect, useMemo} from "react";
+import {useMemo} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setImpostConfigOpen} from "../features/impostConfigOpen.js";
 import {setImpostPosition} from "../features/ImpostPosition.js";
 import {setNode} from "../features/node.js";
+import {setImpostId} from "../features/impostId.js";
 import {setConfigListOpen} from "../features/configListOpen.js";
 import Sash from "./Sash.jsx";
 import {setGlassId} from "../features/glassId.js";
 import DragGuide from "./DragGuide.jsx";
-import {setWindowImpost} from "../features/windows.js";
+import ImpostView from "./ImpostView.jsx";
 
 /**
  * WindowView - Компонент динамического чертежа окна.
@@ -32,10 +33,6 @@ export default function WindowView({
     const MIN_FONT_SIZE = 20;
     const MAX_FONT_SIZE = 60;
     const offset = 120;
-
-    useEffect(() => {
-        console.log(tree)
-    }, [tree]);
 // Расчет
     const dynamicFontSize = Math.min(
         MAX_FONT_SIZE,
@@ -103,7 +100,7 @@ export default function WindowView({
 
     // Разделение стекла на два сегмента
     const splitSegment = (targetId) => {
-        dispatch(setWindowImpost(targetId))
+        dispatch(setImpostId(targetId))
         dispatch(setConfigListOpen(true))
     };
 
@@ -115,14 +112,15 @@ export default function WindowView({
             return (
                 <g key={node.id}>
 
-                    <rect
+                    {/*<rect
                         x={hp + node.impX} y={hp + node.impY}
                         width={isVert ? impostWidth : Math.max(0, node.w)}
                         height={isVert ? Math.max(0, node.h): impostWidth}
                         fill={color} stroke="#334155" strokeWidth="1"
                         className="cursor-move hover:brightness-95 transition-all"
                         onClick={(e) => handleImpostClick(e, node)}
-                    />
+                    />*/}
+                    <ImpostView id={node.id} handleImpostClick={handleImpostClick} impostWidth={impostWidth} hp={hp} node={node} isVert={isVert} color={color} />
                     {renderTree(node.child1)}
                     {renderTree(node.child2)}
                 </g>
@@ -133,6 +131,7 @@ export default function WindowView({
         if (node.type === 'glass') {
             const worldX = hp + node.x;
             const worldY = hp + node.y;
+
             return (
                 <g key={node.id}>
                     {/* Базовое стекло / проем */}
@@ -147,8 +146,11 @@ export default function WindowView({
                     />
 
                     {/* Вставка створки как отдельного компонента */}
+
                     {node.hasSash && (
                         <Sash
+                            node={node}
+                            id={node.id}
                             overlap={selectSashWidth.paz}
                             sashWidth={selectSashWidth.width}
                             x={worldX}

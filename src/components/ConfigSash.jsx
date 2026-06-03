@@ -100,6 +100,7 @@ export default function ConfigSash({setOpenSashConfig, createSash, config = fals
                     </Button>
                     <Button onClick={()=>{
                         setOpenSashConfig(false)
+
                         createSash()
                     }} >
                         Удалить

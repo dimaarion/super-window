@@ -3,10 +3,10 @@ import {useDispatch, useSelector} from "react-redux";
 import ImpostConfig from "./ImpostConfig.jsx";
 import ConfigList from "./ConfigList.jsx";
 import WindowBuilder from "./WindowBuilder.jsx";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {whereId} from "../action/index.js";
 import TopPanel from "./TopPanel.jsx";
-import {setWindowFramePrice, setWindowUnit} from "../features/windows.js";
+import {setWindowFramePrice, setWindowSashPrice, setWindowUnit} from "../features/windows.js";
 
 export default function CreateProject(){
     const dispatch = useDispatch();
@@ -34,14 +34,30 @@ export default function CreateProject(){
 
     useEffect(() => {
         whereId("Accessories",frameId).then((el)=>{
-            dispatch(setWindowFramePrice(el[0][color.type]))
-            dispatch(setWindowUnit(el[0].unit))
+            if(el[0]){
+                dispatch(setWindowFramePrice(el[0][color.type]))
+                dispatch(setWindowSashPrice(el[0][color.type]))
+                dispatch(setWindowUnit(el[0].unit))
+            }
+
         })
     }, [frameId, color.type,dispatch]);
-    const frameLength = (windowWidth * 2 + windowHeight * 2) / 1000;
-    const framePrice = frameLength * windows.framePrice
 
-    console.log(tree,node)
+
+    const frame = useMemo(() => {
+        const frameLength = ((windowWidth * 2 + windowHeight * 2) / 1000).toFixed(1);
+        const framePrice = frameLength * windows.framePrice;
+        return {width:frameLength,price:framePrice.toFixed(2)};
+    },[windowWidth,windowHeight,windows.framePrice])
+
+    useEffect(() => {
+        console.log(tree)
+        console.log(windows.impostProfile)
+    }, [windows.impostProfile,tree,windows]);
+
+
+
+
 
 
     return <>
@@ -62,18 +78,17 @@ export default function CreateProject(){
             <div  className={"w-full relative z-20 mt-6 ml-4 flex justify-center bg-gray-800 shadow-xl shadow-gray-950 text-xl text-gray-50"}>
                 <div className={"w-full"}>
                     <div className={"p-4 bg-gray-700 w-full"}>Спецификации</div>
-                    <div className={"flex-wrap justify-between p-4 border-b-2 border-gray-500"}>
-                        <div className={"grid grid-cols-3 text-lg text-start"}>
+                    <div className={"flex-wrap justify-between border-b-2 border-gray-500"}>
+                        <div className={"grid grid-cols-3 text-lg text-center mb-4 bg-gray-900 p-2"}>
                             <div>Название</div>
                             <div>Цена</div>
                             <div>Сумма</div>
                         </div>
-                        <div className={"grid grid-cols-3 text-lg text-start"}>
+                        <div className={"grid grid-cols-3 text-lg text-start p-2"}>
                             <div>Рама:</div>
-                            <div>{frameLength} {windows.unit}.</div>
-                            <div>{framePrice} </div>
+                            <div>{frame.width} {windows.unit}.</div>
+                            <div>{frame.price} </div>
                         </div>
-
 
                     </div>
                 </div>

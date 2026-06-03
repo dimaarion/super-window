@@ -13,7 +13,7 @@ import {setSashId} from "../features/sashId.js";
 import {setShtulpId} from "../features/shtulpId.js";
 import {setCompletionId} from "../features/completion.js";
 import {setHardwareId} from "../features/hardware.js";
-import {setWindowFramePrice, setWindowImpostId} from "../features/windows.js";
+import {setWindowImpostId} from "../features/windows.js";
 
 export default function WindowBuilder() {
 
@@ -43,8 +43,11 @@ export default function WindowBuilder() {
         })
         whereId("Accessories", frameId).then((res) => {
             const el = res[0]
-            dispatch(setFrameId(el.id))
-            dispatch(setProfileHeight(el.width))
+            if(el?.id){
+                dispatch(setFrameId(el.id))
+                dispatch(setProfileHeight(el.width))
+            }
+
         })
     }, [frameId,dispatch]);
 
@@ -90,7 +93,6 @@ export default function WindowBuilder() {
                                 const el = res[0]
                                 dispatch(setFrameId(el.id))
                                 dispatch(setProfileHeight(el.width))
-                                dispatch(setWindowFramePrice(el.white))
                             })
                         }} id="ramen" required>
                             {list.map((el) => <option key={el.id + 'ramen'} value={el.id}>{el.article}</option>)}

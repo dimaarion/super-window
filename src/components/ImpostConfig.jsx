@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setImpostConfigOpen} from "../features/impostConfigOpen.js";
 import {setImpostPosition} from "../features/ImpostPosition.js";
 import {setTree} from "../features/tree.js";
+import {setWindowImpostProfileRemove} from "../features/windows.js";
 
 export default function ImpostConfig({impostWidth = 120}){
     const position = useSelector((state)=>state.impostPosition.value)
@@ -23,6 +24,7 @@ export default function ImpostConfig({impostWidth = 120}){
 
                     const updateTree = (current) => {
                         // Если этот узел — тот самый split, который мы хотим удалить
+                        dispatch(setWindowImpostProfileRemove(current.id))
                         if (current.id === node.id && current.type === 'split') {
                             return {
                                 id: Math.random(),

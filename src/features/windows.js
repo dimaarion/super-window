@@ -17,7 +17,10 @@ export const windows = createSlice({
             price:0,
             color:1,
             framePrice:0,
-            unit:"м"
+            unit:"м",
+            sash:[],
+            sashPrice:0,
+            impostProfile:[],
 
 
         },
@@ -64,6 +67,24 @@ export const windows = createSlice({
         },
         setWindowUnit:(state,action)=>{
             state.value.unit = action.payload
+        },
+        setWindowSash:(state,action)=>{
+            state.value.sash = [...state.value.sash,action.payload]
+        },
+        setWindowSashRemove:(state,action)=>{
+            state.value.sash = state.value.sash.filter((el)=> el.id !== action.payload)
+        },
+        setWindowSashPrice:(state,action)=>{
+            state.value.sashPrice = parseInt(action.payload)
+        },
+        setWindowImpostProfile:(state,action)=>{
+
+            const items = [...state.value.impostProfile,action.payload ]
+            state.value.impostProfile = [...new Map(items.map(item => [item.id, item])).values()];
+        },
+        setWindowImpostProfileRemove:(state,action)=>{
+            const items = state.value.impostProfile.filter((el)=> el.id !== action.payload)
+            state.value.impostProfile = [...new Map(items.map(item => [item.id, item])).values()];
         }
     }
 
@@ -82,7 +103,13 @@ export const {
     setWindowColor,
     setWindowImpost,
     setWindowFramePrice,
-    setWindowUnit
+    setWindowUnit,
+    setWindowSash,
+    setWindowSashPrice,
+    setWindowImpostProfile,
+    setWindowSashRemove,
+    setWindowImpostProfileRemove
+
 } = windows.actions
 
 export default windows.reducer

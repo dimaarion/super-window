@@ -6,10 +6,7 @@ function DbTools() {
     const [showToast, setShowToast] = useState({text:"",complete: false});
 
     useEffect(()=>{
-      //  setShowToast({text: "Экспорт успешно завершён", complete: true});
-        window.addEventListener("toggle",(event)=>{
-            console.log(event);
-        })
+
 
     },[])
 
@@ -31,7 +28,11 @@ function DbTools() {
                         </svg>
                     </div>
                 </div>
-                <div onClick={deleteDatabase} className={"relative text-parent h-[80px]"}>
+                <div onClick={()=>{
+                    deleteDatabase().then((res)=>{
+                        setShowToast({text: res, complete: true});
+                    })
+                }} className={"relative text-parent h-[80px]"}>
                     <div
                         className={"text-gray-800 cursor-pointer z-20 m-auto left-[50px] top-0 bottom-0 h-[55px] text-xl absolute"}>
                         Удалить базу
@@ -57,7 +58,7 @@ function DbTools() {
                         onChange={(e) => {
                                 const file = e.target.files[0];
                                 if (file) importDb(file);
-                            setShowToast({text: "База успешно импортирована", complete: true});
+                                setShowToast({text: "База успешно импортирована", complete: true});
                         }}
                     />
                 </div>

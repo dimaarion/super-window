@@ -1,10 +1,18 @@
+import {useDispatch, useSelector} from "react-redux";
+import {setWindowSash} from "../features/windows.js";
+import {useEffect} from "react";
+
 const Sash = ({
                   x, y, w, h,
                   color = "#FFFFFF",
                   overlap = 24,
                   sashWidth = 65,
-                  openSide = 'left'
+                  openSide = 'left',
+                  id,
+                  node
               }) => {
+    const dispatch = useDispatch();
+    const tree = useSelector(state => state.tree.value);
     // Внешние габариты створки (с наплавом)
     const sx = x - overlap;
     const sy = y - overlap;
@@ -27,6 +35,10 @@ const Sash = ({
         ? sx + sw - (sashWidth / 2)  // Центр правого профиля
         : sx + (sashWidth / 2);      // Центр левого профиля
     const handleY = sy + sh / 2;
+    useEffect(() => {
+        dispatch(setWindowSash({id:id,width:Math.max(0, sw - (sashWidth * 2)),height:Math.max(0, sh - (sashWidth * 2))}))
+
+    }, [sashWidth, sw, sh, dispatch,tree,id]);
 
     return (
         <g className="sash-component" style={{ pointerEvents: 'none' }}>

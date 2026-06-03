@@ -19,6 +19,7 @@ import {shtulpId} from "./features/shtulpId.js";
 import {completion} from "./features/completion.js";
 import {hardware} from "./features/hardware.js";
 import {windows} from "./features/windows.js";
+import {impostId} from "./features/impostId.js";
 
 
 export default configureStore({
@@ -43,6 +44,7 @@ export default configureStore({
         completion:completion.reducer,
         hardware:hardware.reducer,
         windows:windows.reducer,
+        impostId:impostId.reducer,
 
     },
 })

@@ -140,12 +140,11 @@ export async function exportDb() {
     const json = JSON.stringify(exportData, null, 2);
     const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
+
     const a = document.createElement("a");
     a.href = url;
     a.download = "indexeddb_export.json";
     a.click();
-
-
 }
 
 
@@ -198,9 +197,9 @@ export async function importDb(file) {
 export async function deleteDatabase() {
     try {
         await connection.dropDb();
-        console.log("База данных успешно удалена");
-    } catch (ex) {
-        console.error("Ошибка при удалении базы:", ex);
+      return  "База данных успешно удалена"
+    } catch (e) {
+        return  "Ошибка при удалении базы:" + e.message;
     }
 }
 

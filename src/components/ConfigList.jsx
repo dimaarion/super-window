@@ -5,11 +5,12 @@ import {useState} from "react";
 import {setSashDirection} from "../features/sashDirection.js";
 import ConfigSash from "./ConfigSash.jsx";
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "flowbite-react";
+import {setWindowImpostProfile, setWindowImpostProfileRemove, setWindowSashRemove} from "../features/windows.js";
 
 
 export default function ConfigList() {
     const dispatch = useDispatch()
-    const impostId = useSelector((state) => state.windows.value.impost)
+    const impostId = useSelector((state) => state.impostId.value)
     const tree = useSelector(state => state.tree.value);
     const impostWidth = useSelector(state => state.impostWidth.value);
     const glassId = useSelector((state) => state.glassId.value)
@@ -24,11 +25,13 @@ export default function ConfigList() {
 
 
     function createImpost(type, minSize = 0) {
+
         const updateTree = (node) => {
+
             if (node.id === impostId) {
                 if (type === 'vertical' && node.w < minSize * 2 + impostWidth) return node;
                 if (type === 'horizontal' && node.h < minSize * 2 + impostWidth) return node;
-
+                dispatch(setWindowImpostProfile(node))
                 return {
                     id: Math.random(),
                     type: 'split',
@@ -38,6 +41,7 @@ export default function ConfigList() {
                     child2: {id: Math.random(), type: 'glass'}
                 };
             }
+
             return node.type === 'split' ? {
                 ...node,
                 child1: updateTree(node.child1),
@@ -49,6 +53,7 @@ export default function ConfigList() {
 
     function createSash() {
         const update = (n) => {
+            dispatch(setWindowSashRemove(n.id))
             if (n.id === glassId) return {...n, hasSash: !n.hasSash, dir: sashDirection};
             return n.type === 'split' ? {
                 ...n,
@@ -175,6 +180,7 @@ export default function ConfigList() {
                         //    dispatch(setConfigListOpen(false))
                         //  createSash()
                     }} className={"self-center text-start"}>
+
                         {checkSashStatus(tree, glassId) ? "Настройка створки" : "Новая створка"}
                     </div>
                     <div className={"rotate-270"}>
@@ -186,6 +192,7 @@ export default function ConfigList() {
                     </div>
                 </div>
                 <div onClick={() => {
+
                     dispatch(setConfigListOpen(false))
                 }}
                      className={"absolute m-auto right-2 bottom-2 w-[100px] h-[50px] flex justify-center cursor-pointer bg-blue-300 hover:bg-blue-400"}>
