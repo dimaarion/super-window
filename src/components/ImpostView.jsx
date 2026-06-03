@@ -5,9 +5,9 @@ import {useDispatch, useSelector} from "react-redux";
 export default function ImpostView({id = 0, hp, node, impostWidth,isVert,color,handleImpostClick}){
     const dispatch = useDispatch();
     useEffect(()=>{
+      dispatch(setWindowImpostProfile(node))
+    },[])
 
-
-    },[node,dispatch, id])
     return  <rect
         x={hp + node.impX} y={hp + node.impY}
         width={isVert ? impostWidth : Math.max(0, node.w)}

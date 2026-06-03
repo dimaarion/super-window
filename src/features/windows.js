@@ -21,6 +21,7 @@ export const windows = createSlice({
             sash:[],
             sashPrice:0,
             impostProfile:[],
+            impostPrice:0,
 
 
         },
@@ -77,8 +78,10 @@ export const windows = createSlice({
         setWindowSashPrice:(state,action)=>{
             state.value.sashPrice = parseInt(action.payload)
         },
+        setWindowImpostPrice:(state,action)=>{
+            state.value.impostPrice = parseInt(action.payload)
+        },
         setWindowImpostProfile:(state,action)=>{
-
             const items = [...state.value.impostProfile,action.payload ]
             state.value.impostProfile = [...new Map(items.map(item => [item.id, item])).values()];
         },
@@ -108,7 +111,8 @@ export const {
     setWindowSashPrice,
     setWindowImpostProfile,
     setWindowSashRemove,
-    setWindowImpostProfileRemove
+    setWindowImpostProfileRemove,
+    setWindowImpostPrice
 
 } = windows.actions
 

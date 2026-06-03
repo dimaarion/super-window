@@ -1,4 +1,4 @@
-import {useMemo} from "react";
+import {useEffect, useMemo} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setImpostConfigOpen} from "../features/impostConfigOpen.js";
 import {setImpostPosition} from "../features/ImpostPosition.js";
@@ -9,6 +9,8 @@ import Sash from "./Sash.jsx";
 import {setGlassId} from "../features/glassId.js";
 import DragGuide from "./DragGuide.jsx";
 import ImpostView from "./ImpostView.jsx";
+import {windowHeight} from "../features/windowHeight.js";
+import {windowWidth} from "../features/windowWidth.js";
 
 /**
  * WindowView - Компонент динамического чертежа окна.
@@ -17,16 +19,16 @@ import ImpostView from "./ImpostView.jsx";
 export default function WindowView({
                                        width = 1500,        // Ширина проема (мм)
                                        height = 1500,       // Высота проема (мм)
-                                       heightProfile = 60,  // Ширина рамы (мм)
                                        color = "#FFFFFF",
+                                       tree,
+                                       impostWidth
                                        // Цвет профиля
                                    }) {
-    const tree = useSelector(state => state.tree.value);
+
     const impostOpen = useSelector(state => state.impostConfigOpen.value);
     const selectSashWidth = useSelector(state => state.sashWidth.value);
-    const impostWidth = useSelector((state) => state.impostWidth.value);
+    const hp = useSelector((state) => state.profileHeight.value);
     const dispatch = useDispatch()
-    const hp = heightProfile;
     const minSize = 0;    // Минимально допустимый размер стеклопакета
     const BASE_WIDTH = 1500;
     const BASE_FONT_SIZE = 50;
@@ -191,11 +193,11 @@ export default function WindowView({
         const coords = [];
         points.forEach(p => {
             if (type === 'vertical') {
-                coords.push(Math.round(p.y));
-                coords.push(Math.round(p.y + p.h));
+                coords.push(Math.floor(p.y));
+                coords.push(Math.floor(p.y + p.h));
             } else {
-                coords.push(Math.round(p.x));
-                coords.push(Math.round(p.x + p.w));
+                coords.push(Math.floor(p.x));
+                coords.push(Math.floor(p.x + p.w));
             }
         });
 
@@ -208,6 +210,8 @@ export default function WindowView({
             const end = uniqueCoords[i + 1];
             const distance = end - start;
 
+
+
             if (distance <= impostWidth + 2) continue;
 
             // Проверяем, является ли этот отрезок крайним
@@ -216,13 +220,11 @@ export default function WindowView({
 
             // Вычитаем hp из значения, если это крайний элемент
             // (Например, если размер должен показывать расстояние до импоста БЕЗ рамы)
-            let val = distance;
-            if (isFirst) val -= hp;
-            if (isLast) val -= hp;
+
 
             results.push({
                 pos: start + distance / 2,
-                val: Math.round(val),
+                val: Math.round(distance),
                 start: start,
                 end: end
             });
@@ -233,6 +235,7 @@ export default function WindowView({
 
     const fullW = width + hp * 2;
     const fullH = height + hp * 2;
+
 
     return (
         <div className="w-full flex flex-col items-center p-4">

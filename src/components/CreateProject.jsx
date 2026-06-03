@@ -6,7 +6,8 @@ import WindowBuilder from "./WindowBuilder.jsx";
 import {useEffect, useMemo, useState} from "react";
 import {whereId} from "../action/index.js";
 import TopPanel from "./TopPanel.jsx";
-import {setWindowFramePrice, setWindowSashPrice, setWindowUnit} from "../features/windows.js";
+import {setWindowFramePrice, setWindowImpostPrice, setWindowSashPrice, setWindowUnit} from "../features/windows.js";
+import {setWindowWidth} from "../features/windowWidth.js";
 
 export default function CreateProject(){
     const dispatch = useDispatch();
@@ -19,12 +20,15 @@ export default function CreateProject(){
     const frameId = useSelector(state => state.frameId.value);
     const tree = useSelector(state => state.tree.value);
     const node = useSelector(state => state.node.value);
+    const [step, setStep] = useState(0);
     const [color, setColor] = useState({
         name: "Белый",
         type: "white",
         color: "#ffffff",
         id: 1
     });
+
+
 
     useEffect(() => {
         whereId("Colors",windows.color).then((el)=>{
@@ -37,6 +41,7 @@ export default function CreateProject(){
             if(el[0]){
                 dispatch(setWindowFramePrice(el[0][color.type]))
                 dispatch(setWindowSashPrice(el[0][color.type]))
+                dispatch(setWindowImpostPrice(el[0][color.type]))
                 dispatch(setWindowUnit(el[0].unit))
             }
 
@@ -50,24 +55,61 @@ export default function CreateProject(){
         return {width:frameLength,price:framePrice.toFixed(2)};
     },[windowWidth,windowHeight,windows.framePrice])
 
-    useEffect(() => {
-        console.log(tree)
-        console.log(windows.impostProfile)
-    }, [windows.impostProfile,tree,windows]);
+  const impost =  useMemo(() => {
+
+    const imp = windows.impostProfile.map((item,i)=>{
+
+            if(item.h === windowHeight && item.splitType === "vertical"){
+             return   {count:i, len:item.h - (profileHeight * 2) ,type:item.splitType}
+            }else if(item.h !== windowHeight && item.splitType === "vertical"){
+                return {count:i,len:item.h,type:item.splitType}
+            }else if(item.w === windowWidth && item.splitType === "horizontal"){
+                return {count:i,len:item.w - (profileHeight * 2),type:item.splitType}
+            }else if(item.w !== windowWidth && item.splitType === "horizontal"){
+                return {count:i,len:item.w,type:item.splitType}
+            }else {
+                return {count:i,len:null,type:null}
+            }
+
+        })
+
+        const totalImpWidth = imp.reduce((acc, item) => acc + item.len, 0) / 1000;
+        const price = totalImpWidth * windows.impostPrice
+        return {width:totalImpWidth.toFixed(2),price:price.toFixed(2)};
 
 
+    }, [windows.impostProfile,windowWidth,windowHeight,profileHeight,windows.impostPrice]);
+
+    console.log(impost)
+
+
+
+
+    useEffect(()=>{
+       // console.log(windows.impostProfile)
+    },[windows.impostProfile])
+
+
+useEffect(()=>{
+   const interval = setTimeout(() => {
+       setStep(10);
+   },1500)
+return () => clearInterval(interval)
+},[])
 
 
 
 
     return <>
         <div className={"w-1/2 justify-center hidden lg:flex"}>
-            <WindowBuilder />
+            {step}
+            <WindowBuilder/>
         </div>
         <div className={"w-full overflow-auto"}>
             <div className={"justify-center flex-wrap px-4"}>
                 <TopPanel />
-                <WindowView  width={windowWidth} height={windowHeight} heightProfile={profileHeight} color={color.color}/>
+                {step > 5?<WindowView tree={tree} impostWidth={impostWidth} width={windowWidth} height={windowHeight}
+                             heightProfile={profileHeight} color={color.color}/>:""}
                 <div className={"w-full justify-center flex lg:hidden"}>
                     <div className={"w-full mt-6 flex justify-center bg-gray-700 shadow-2xl border-2 border-gray-500 shadow-black"}>
                     </div>
@@ -79,15 +121,28 @@ export default function CreateProject(){
                 <div className={"w-full"}>
                     <div className={"p-4 bg-gray-700 w-full"}>Спецификации</div>
                     <div className={"flex-wrap justify-between border-b-2 border-gray-500"}>
-                        <div className={"grid grid-cols-3 text-lg text-center mb-4 bg-gray-900 p-2"}>
-                            <div>Название</div>
-                            <div>Цена</div>
-                            <div>Сумма</div>
-                        </div>
-                        <div className={"grid grid-cols-3 text-lg text-start p-2"}>
+                        <div className={"flex gap-4 text-lg text-start p-2"}>
                             <div>Рама:</div>
-                            <div>{frame.width} {windows.unit}.</div>
-                            <div>{frame.price} </div>
+                            <div>
+                                <div>Длина:</div>
+                                <div>Цена:</div>
+                                <div>Стоимость:</div>
+                            </div>
+                            <div>
+                                <div> {frame.width} {windows.unit}.</div>
+                                <div> {windows.framePrice}</div>
+                                <div> {frame.price}</div>
+                            </div>
+
+                        </div>
+                        <div className={"flex gap-4 text-lg text-start p-2"}>
+                            <div>Импост:</div>
+                            <div>
+                                <div>Длина: {impost.width} {windows.unit}.</div>
+                                <div>Цена: {windows.impostPrice}</div>
+                                <div>Стоимость: {impost.price} </div>
+                            </div>
+
                         </div>
 
                     </div>

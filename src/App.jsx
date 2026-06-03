@@ -31,7 +31,7 @@ function App() {
         })
 
         connection.getDbSchema(NAMEDB).then((res) => {
-            console.log(res)
+        //    console.log(res)
         })
     }, []);
 

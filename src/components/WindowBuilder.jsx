@@ -49,7 +49,31 @@ export default function WindowBuilder() {
             }
 
         })
-    }, [frameId,dispatch]);
+
+
+    }, [frameId,dispatch,windows.impostId]);
+
+    useEffect(() => {
+        whereId("Accessories", windows.impostId).then((res) => {
+            const el = res[0]
+            if(el?.id){
+                dispatch(setImpostWidth(el.width))
+            }
+
+        })
+
+        whereId("Accessories", frameId).then((res) => {
+            const el = res[0]
+            if(el?.id){
+                dispatch(setProfileHeight(el.width))
+            }
+
+        })
+    }, []);
+
+
+
+
 
     return <>
         <div className={"w-full relative z-20 mt-6 ml-4 flex justify-center bg-gray-800 shadow-xl shadow-gray-950 text-xl text-gray-50"}>

@@ -24,7 +24,7 @@ export default function ImpostConfig({impostWidth = 120}){
 
                     const updateTree = (current) => {
                         // Если этот узел — тот самый split, который мы хотим удалить
-                        dispatch(setWindowImpostProfileRemove(current.id))
+
                         if (current.id === node.id && current.type === 'split') {
                             return {
                                 id: Math.random(),
@@ -42,6 +42,7 @@ export default function ImpostConfig({impostWidth = 120}){
                         }
                         return current;
                     };
+                    dispatch(setWindowImpostProfileRemove(node.id))
                     dispatch(setTree(updateTree(tree)));
                 }}  className={"p-2 justify-center cursor-pointer hover:bg-blue-400 bg-blue-300 h-[40px] self-center flex w-[100px]"}>
                     Удалить

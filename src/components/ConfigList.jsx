@@ -31,7 +31,10 @@ export default function ConfigList() {
             if (node.id === impostId) {
                 if (type === 'vertical' && node.w < minSize * 2 + impostWidth) return node;
                 if (type === 'horizontal' && node.h < minSize * 2 + impostWidth) return node;
-                dispatch(setWindowImpostProfile(node))
+                if(node.type !== "glass"){
+                    dispatch(setWindowImpostProfile(node))
+                }
+
                 return {
                     id: Math.random(),
                     type: 'split',
