@@ -25,8 +25,6 @@ export default function Home() {
     } else {
        return <div className={"flex justify-between"}>
            <LeftPanel />
-
-
        </div>
     }
 

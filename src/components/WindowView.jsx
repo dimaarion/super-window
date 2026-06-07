@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from "react";
+import {useMemo} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setImpostConfigOpen} from "../features/impostConfigOpen.js";
 import {setImpostPosition} from "../features/ImpostPosition.js";
@@ -9,8 +9,8 @@ import Sash from "./Sash.jsx";
 import {setGlassId} from "../features/glassId.js";
 import DragGuide from "./DragGuide.jsx";
 import ImpostView from "./ImpostView.jsx";
-import {windowHeight} from "../features/windowHeight.js";
-import {windowWidth} from "../features/windowWidth.js";
+import StulpSash from "./StulpSash.jsx";
+import {setStulpOpenConfig} from "../features/shtulpWindows.js";
 
 /**
  * WindowView - Компонент динамического чертежа окна.
@@ -104,6 +104,7 @@ export default function WindowView({
     const splitSegment = (targetId) => {
         dispatch(setImpostId(targetId))
         dispatch(setConfigListOpen(true))
+        dispatch(setStulpOpenConfig(false))
     };
 
     // Рекурсивный рендер элементов SVG
@@ -113,15 +114,6 @@ export default function WindowView({
             const isVert = node.splitType === 'vertical';
             return (
                 <g key={node.id}>
-
-                    {/*<rect
-                        x={hp + node.impX} y={hp + node.impY}
-                        width={isVert ? impostWidth : Math.max(0, node.w)}
-                        height={isVert ? Math.max(0, node.h): impostWidth}
-                        fill={color} stroke="#334155" strokeWidth="1"
-                        className="cursor-move hover:brightness-95 transition-all"
-                        onClick={(e) => handleImpostClick(e, node)}
-                    />*/}
                     <ImpostView id={node.id} handleImpostClick={handleImpostClick} impostWidth={impostWidth} hp={hp} node={node} isVert={isVert} color={color} />
                     {renderTree(node.child1)}
                     {renderTree(node.child2)}
@@ -139,8 +131,8 @@ export default function WindowView({
                     {/* Базовое стекло / проем */}
                     <rect
                         x={worldX} y={worldY} width={Math.max(0, node.w)} height={Math.max(0, node.h)}
-                        fill="#7DD3FC" fillOpacity="0.2" stroke="#94A3B8" strokeWidth="1"
-                        className="cursor-pointer hover:fill-sky-100 "
+                        fill="#7DD3FC" fillOpacity="1" stroke="#94A3B8" strokeWidth="1"
+                        className="cursor-pointer  hover:opacity-90"
                         onClick={() => {
                             splitSegment(node.id)
                             dispatch(setGlassId(node.id))
@@ -150,18 +142,35 @@ export default function WindowView({
                     {/* Вставка створки как отдельного компонента */}
 
                     {node.hasSash && (
-                        <Sash
-                            node={node}
-                            id={node.id}
-                            overlap={selectSashWidth.paz}
-                            sashWidth={selectSashWidth.width}
-                            x={worldX}
-                            y={worldY}
-                            w={Math.max(0, node.w)}
-                            h={Math.max(0, node.h)}
-                            color={color}
-                            openSide={node?.dir}
-                        />
+                        node.isStulp?(
+                                <StulpSash
+                                    overlap={selectSashWidth.paz} // твой отступ (обычно 8-12мм)
+                                    sashWidth={selectSashWidth.width} // ширина профиля створки (60-80мм)
+                                    x={worldX}
+                                    y={worldY}
+                                    w={Math.max(0, node.w)}
+                                    h={Math.max(0, node.h)}
+                                    color={color}
+                                    activeSide={node.activeSide || "left"} // 'left' или 'right'
+                                    activeDir={node.activeDir || "tiltTurn"} // 'turn' или 'tiltTurn'
+                                    passiveDir={node.passiveDir || "turn"}
+                                    id={node.id}
+                                />
+                            ):(
+                                <Sash
+                                    node={node}
+                                    id={node.id}
+                                    overlap={selectSashWidth.paz}
+                                    sashWidth={selectSashWidth.width}
+                                    x={worldX}
+                                    y={worldY}
+                                    w={Math.max(0, node.w)}
+                                    h={Math.max(0, node.h)}
+                                    color={color}
+                                    openSide={node?.dir}
+                                />
+                            )
+
                     )}
 
 
@@ -277,7 +286,7 @@ export default function WindowView({
                                     {/* Текст размера */}
                                     <text
                                         x={hp + d.pos}
-                                        y={yPos - 8}
+                                        y={yPos}
                                         textAnchor="middle"
                                         style={{
                                             fontSize: `${Math.max(14, (width + height) / 60)}px`,
@@ -291,7 +300,7 @@ export default function WindowView({
 
                     </g>
 
-                    {/* Вертикальные размеры слева */}
+                    {/* Вертикальные размеры справа */}
                     <g className="dimensions-right">
                         {getDimensions('vertical').map((d, i) => {
                             const yStart = hp + d.start;
@@ -310,7 +319,7 @@ export default function WindowView({
                                     {/* Текст размера, повернутый на 90 градусов */}
                                     <text
                                         x={xPos} // Смещение вправо от линии, чтобы текст не лежал на ней
-                                        y={d.pos + 90}
+                                        y={d.pos + 20}
                                         textAnchor="middle" // Центрируем по "длине" текста после поворота
                                         dominantBaseline="hanging" // Чтобы текст "свисал" от точки вправо
                                         transform={`rotate(90, ${xPos + 15}, ${hp + d.pos})`} // Поворот вокруг собственной точки

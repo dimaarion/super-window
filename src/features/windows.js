@@ -70,7 +70,19 @@ export const windows = createSlice({
             state.value.unit = action.payload
         },
         setWindowSash:(state,action)=>{
-            state.value.sash = [...state.value.sash,action.payload]
+         console.log(state.value.sash.filter((el)=>el.id === action.payload.id).length)
+            if(state.value.sash.filter((el)=>el.id === action.payload.id).length === 0){
+                state.value.sash = [...state.value.sash,action.payload]
+            }else {
+                state.value.sash = state.value.sash.map((el)=> {
+                   if(el.id === action.payload.id){
+                       el = action.payload
+                   }
+                    return el
+                })
+            }
+
+
         },
         setWindowSashRemove:(state,action)=>{
             state.value.sash = state.value.sash.filter((el)=> el.id !== action.payload)

@@ -20,6 +20,7 @@ import {completion} from "./features/completion.js";
 import {hardware} from "./features/hardware.js";
 import {windows} from "./features/windows.js";
 import {impostId} from "./features/impostId.js";
+import {shtulpWindows} from "./features/shtulpWindows.js";
 
 
 export default configureStore({
@@ -45,6 +46,7 @@ export default configureStore({
         hardware:hardware.reducer,
         windows:windows.reducer,
         impostId:impostId.reducer,
+        shtulpWindows:shtulpWindows.reducer
 
     },
 })

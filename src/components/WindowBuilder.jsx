@@ -69,6 +69,11 @@ export default function WindowBuilder() {
             }
 
         })
+
+        whereId("Accessories", sashId).then((res) => {
+            const el = res[0]
+            dispatch(setSashWidth({width: el?.width, paz: el?.grooveOffset}))
+        })
     }, []);
 
 
@@ -117,6 +122,7 @@ export default function WindowBuilder() {
                                 const el = res[0]
                                 dispatch(setFrameId(el.id))
                                 dispatch(setProfileHeight(el.width))
+
                             })
                         }} id="ramen" required>
                             {list.map((el) => <option key={el.id + 'ramen'} value={el.id}>{el.article}</option>)}

@@ -332,3 +332,4 @@ export function exportSvgToBase64(svgElement) {
     // 4. Возвращаем готовый Data URL, который можно вставлять в <img src="..."> или сохранять в базу
     return `data:image/svg+xml;base64,${base64Result}`;
 }
+
