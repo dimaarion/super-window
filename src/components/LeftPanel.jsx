@@ -4,7 +4,7 @@ import {useDispatch} from "react-redux";
 export default function LeftPanel(){
     const dispatch = useDispatch();
     return <>
-        <div className={"flex text-xl justify-between container text-gray-50"}>
+        <div className={"hidden sm:flex text-xl justify-between container text-gray-50"}>
             <div className={"flex-wrap justify-center px-3 w-[300px] shadow-xl shadow-gray-950"}>
                 <div onClick={()=>{
                     dispatch(setPageList(""));

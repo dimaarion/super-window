@@ -17,6 +17,7 @@ import {setFrameId} from "../features/frameId.js";
 import {setSashId} from "../features/sashId.js";
 import {setShtulpId} from "../features/shtulpId.js";
 import {setCompletionId} from "../features/completion.js";
+import {setPage} from "../features/page.js";
 
 
 export default function TopPanel(){
@@ -31,6 +32,7 @@ export default function TopPanel(){
     const hardware = useSelector((state) => state.hardware.value);
     const tree = useSelector(state => state.tree.value);
     const windows = useSelector(state => state.windows.value);
+
 
 
 
@@ -71,11 +73,8 @@ export default function TopPanel(){
     };
 
     return <>
-        <div className={"p-2 bg-gray-950 justify-between flex w-full mt-6 z-20 relative text-gray-50"}>
-            <div onClick={() => {
-                dispatch(setPageList(""));
-            }}
-                 className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center " + `${pageList === "" ? "bg-gray-800" : ""}`}>
+        <div className={"p-2 bg-gray-950 justify-between flex w-full z-20 relative text-gray-50"}>
+            <div onClick={() => {dispatch(setPageList(""));dispatch(setPage("Главная"))}} className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center " + `${pageList === "" ? "bg-gray-800" : ""}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                      className="bi bi-house-door-fill" viewBox="0 0 16 16">
                     <path
@@ -98,26 +97,22 @@ export default function TopPanel(){
                 dispatch(setShtulpId(1));
                 dispatch(setWindowImpostId(1));
                 dispatch(setCompletionId(1));
-            }}
-                 className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center " + `${pageList === "new-project" ? "bg-gray-800" : ""}`}>
+                dispatch(setPage("Главная"))
+            }} className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center " + `${pageList === "new-project" ? "bg-gray-800" : ""}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" fill="currentColor"
                      className="bi bi-plus-lg" viewBox="0 0 16 16">
                 <path fillRule="evenodd"
                           d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
                 </svg>
             </div>
-            <div onClick={()=>{
-                dispatch(setPageList("saved-project"));
-            }} className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center"}>
+            <div onClick={()=>{dispatch(setPageList("saved-project"));dispatch(setPage("Главная"))}} className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center"}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                      className="bi bi-folder-fill" viewBox="0 0 16 16">
                     <path
                         d="M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.825a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3zm-8.322.12C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139z"/>
                 </svg>
             </div>
-            <div onClick={()=>{
-                dispatch(setPageList("bd-settings"));
-            }} className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center" + `${pageList === "bd-settings"?" bg-gray-800 ":""}`}>
+            <div onClick={()=>{dispatch(setPageList("bd-settings"));dispatch(setPage("Главная"))}} className={"border-r-2 hover:bg-gray-800 border-gray-500 p-2 cursor-pointer w-full flex justify-center" + `${pageList === "bd-settings"?" bg-gray-800 ":""}`}>
                 <svg width="30"  viewBox="0 0 89 81" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <g transform="translate(1 0.5)">
                         <line x1="0" y1="0" x2="0" y2="40" fill="#cccccc" strokeWidth="2" stroke="#808080" strokeLinecap="round" strokeLinejoin="bevel" transform="translate(0 20)" />
@@ -128,9 +123,7 @@ export default function TopPanel(){
                     </g>
                 </svg>
             </div>
-            <div onClick={()=>{
-                dispatch(setPageList("saved-project"));
-            }} className={"p-2 hover:bg-gray-800 cursor-pointer w-full flex justify-center"}>
+            <div onClick={()=>{dispatch(setPageList("saved-project"));dispatch(setPage("Главная"))}} className={"p-2 hover:bg-gray-800 cursor-pointer w-full flex justify-center"}>
                 <svg width="30"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g>
                         <path d="M0 3C0 1.34315 1.34315 0 3 0C4.65685 0 6 1.34315 6 3C6 4.65685 4.65685 6 3 6C1.34315 6 0 4.65685 0 3Z" fill="none" strokeWidth="2" stroke="#FFFFFF" transform="translate(9 9)" />
@@ -139,7 +132,7 @@ export default function TopPanel(){
                 </svg>
             </div>
 
-            {pageList === "new-project" || pageList === "update-project" ?<div className={"p-2 cursor-pointer border-l-2 border-gray-500 w-full flex justify-center"}>
+            {pageList === "new-project" || pageList === "update-project" ?<div className={"p-2 cursor-pointer hidden border-l-2 border-gray-500 w-full sm:flex justify-center"}>
                 <Button onClick={() => {
                     setOpenModal(true)
                     setSave(false)
@@ -150,6 +143,18 @@ export default function TopPanel(){
                 </Button>
             </div>:""}
         </div>
+       <div>
+           {pageList === "new-project" || pageList === "update-project" ?<div className={"p-2 cursor-pointer border-gray-500 w-full sm:hidden justify-center"}>
+           <Button onClick={() => {
+               setOpenModal(true)
+               setSave(false)
+
+               setValue({...defaultValue,image:exportSvgToBase64(document.querySelector("#window-project"))})
+           }}>
+               Сохранить
+           </Button>
+       </div>:""}
+       </div>
         <Modal show={openModal} size="3xl" onClose={() => setOpenModal(false)} popup>
             <ModalHeader>
                 <div className={"text-2xl p-4"}>Настройки Окна</div>

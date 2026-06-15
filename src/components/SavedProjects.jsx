@@ -33,15 +33,15 @@ export default function SavedProjects(){
 
     return <>
         <div className={"flex w-full justify-start gap-8"}>
-            <div>
+            <div className={"hidden lg:block"}>
                 <LeftPanel/>
             </div>
-            <div >
-                {project.map((el, index) => <div key={el.id + "project"} className={"flex text-gray-50 text-xl p-3"}>
-                    <div className={"w-[200px] px-4 border-r-2 border-gray-400 "}>
+            <div className={"w-full"}>
+                {project.map((el, index) => <div key={el.id + "project"} className={"sm:flex text-gray-50 text-xl p-3"}>
+                    <div className={"w-full sm:w-[200px] px-4 border-b-2 pb-2 mb-2 sm:border-r-2 sm:border-b-0 border-gray-400 "}>
                         <img className={"w-full"} src={el.image} alt={el.name} />
                     </div>
-                        <div className={"border-r-2 border-gray-400 px-4"}>
+                        <div className={"sm:border-r-2 border-gray-400 px-4"}>
                             <div>{el.name}</div>
                             <div>{el.article}</div>
                             <div>{el.system}</div>
@@ -49,10 +49,10 @@ export default function SavedProjects(){
                             <div><span>{el.width} x {el.height} мм.</span></div>
                             <div>Цена: {el.price}</div>
                         </div>
-                    <div className={"flex border-r-2 border-gray-400 px-4"}>
+                    <div className={"flex border-b-2 pb-2 mb-2 sm:border-r-2 sm:border-b-0 border-gray-400 px-4"}>
                         <div className={"self-center flex text-2xl"}>{el.count} шт.</div>
                     </div>
-                    <div className={"flex border-r-2 border-gray-400  px-4"}>
+                    <div className={"flex border-b-2 pb-2 mb-2 sm:border-r-2 sm:border-b-0 border-gray-400  px-4"}>
                         <div>
                             <div onClick={()=>{
                                 dispatch(setTree(el.tree))

@@ -69,8 +69,8 @@ export default function HardwareForm() {
 
     return <>
             <div className={"flex justify-center text-gray-50 pt-6 px-4"}>
-                <div className={"flex w-full justify-center px-6 gap-4"}>
-                    <div className={"w-1/2  shadow-xl shadow-gray-950"}>
+                <div className={"lg:flex w-full justify-center lg:px-6 gap-4"}>
+                    <div className={"lg:w-1/2  shadow-xl shadow-gray-950"}>
                         <div className={"flex justify-between bg-gray-700"}>
                             <div>
                                 <h2 className={"text-center p-2"}>Фурнитура</h2>
@@ -104,7 +104,7 @@ export default function HardwareForm() {
 
                         </div>
                     </div>
-                    <div className={"w-1/2  shadow-xl shadow-gray-950"}>
+                    <div className={"lg:w-1/2  shadow-xl shadow-gray-950"}>
                         <div className={"flex justify-between bg-gray-700"}>
                             <div>
                                 <h2 className={"text-center p-2"}>Наборы</h2>

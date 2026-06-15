@@ -1,7 +1,8 @@
-import {Button, Select, TextInput} from "flowbite-react";
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader, Select, TextInput} from "flowbite-react";
 import {insertTable, parseNan, select, updateTb} from "../action/index.js";
 import {useEffect, useState} from "react";
 import {connection} from "../Db.js";
+import EditSvg from "./EditSvg.jsx";
 
 export default function SetForm() {
     const defaultValue = {
@@ -18,6 +19,9 @@ export default function SetForm() {
     const [dataAccessories, setAccessoriesData] = useState([{}])
     const [value, setValue] = useState(defaultValue)
     const [search, setSearch] = useState("");
+    const [openModal, setOpenModal] = useState(false);
+    const [id, setId] = useState(0);
+    const [article, setArticle] = useState("");
 
     useEffect(() => {
         select("HardwareSet").then((res) => {
@@ -30,7 +34,7 @@ export default function SetForm() {
             setAccessoriesData(res)
         })
     }, []);
-    return <div className={"pt-6 "}>
+    return <div className={"pt-6"}>
         <div className={"overflow-auto h-[700px]"}>
             <div className={"flex justify-start bg-gray-900 gap-2 text-gray-50"}>
                 <div className={"text-start flex w-1/2 self-center"}>
@@ -62,25 +66,24 @@ export default function SetForm() {
                     <div className={" text-center"}>Артикул</div>
 
                 </div>
-                <div className={"w-full"}>
+                <div className={"w-full hidden lg:block"}>
                     <div className={" text-center"}>Название</div>
 
                 </div>
-                <div className={"w-full"}>
+                <div className={"w-full hidden lg:block"}>
                     <div className={" text-center"}>Количество</div>
 
                 </div>
-                <div className={"w-full"}>
+                <div className={"w-full hidden lg:block"}>
                     <div className={" text-center"}>Расстояние</div>
 
                 </div>
-                <div className={"w-full"}>
+                <div className={"w-full hidden lg:block"}>
                     <div className={" text-center"}>Отступ</div>
 
                 </div>
             </div>
         </div>
-
         <div className={"flex justify-center"}>
             <div className={"justify-center px-6 w-full shadow-2xl  pb-4"}>
                 {data.filter((sh)=>sh.name?.match(new RegExp(search, "gi"))).map((el) => <div key={el.id + "set"} className={"flex pt-3 border-b-2 border-gray-500 gap-2"}>
@@ -106,6 +109,98 @@ export default function SetForm() {
                         </div>
 
                     </div>
+                    <div className={"w-full hidden lg:block"}>
+                        <div className={"text-center"}>
+                            <TextInput color={"myColor"} onChange={(e) => {
+                                connection.update({
+                                    in: "HardwareSet",
+                                    set: {
+                                        name: e.target.value
+                                    },
+                                    where: {
+                                        id: el.id
+                                    }
+                                })
+                            }} type={"text"} defaultValue={el.name}/>
+                        </div>
+
+                    </div>
+                    <div className={"w-full hidden lg:block"}>
+                        <div className={" text-center"}>
+                            <TextInput color={"myColor"} onChange={(e) => {
+                                connection.update({
+                                    in: "HardwareSet",
+                                    set: {
+                                        count: parseInt(e.target.value)
+                                    },
+                                    where: {
+                                        id: el.id
+                                    }
+                                })
+
+                            }} type={"number"} min={0} defaultValue={parseNan(el.count)}/>
+
+                        </div>
+
+                    </div>
+                    <div className={"w-full hidden lg:block"}>
+                        <div className={" text-center"}>
+                            <TextInput color={"myColor"} onChange={(e) => {
+                                connection.update({
+                                    in: "HardwareSet",
+                                    set: {
+                                        distance: parseInt(e.target.value)
+                                    },
+                                    where: {
+                                        id: el.id
+                                    }
+                                })
+
+                            }} type={"number"} min={0} defaultValue={parseNan(el.distance)}/>
+
+                        </div>
+
+                    </div>
+                    <div className={"w-full hidden lg:block"}>
+                        <div className={" text-center"}>
+                            <TextInput color={"myColor"} onChange={(e) => {
+                                connection.update({
+                                    in: "HardwareSet",
+                                    set: {
+                                        indent: parseInt(e.target.value)
+                                    },
+                                    where: {
+                                        id: el.id
+                                    }
+                                })
+
+                            }} type={"number"} min={0} defaultValue={parseNan(el.indent)}/>
+                        </div>
+
+                    </div>
+                    <div onClick={()=>{
+                        setOpenModal(true)
+                        setId(el.id)
+                        setArticle(el.name)
+                    }} className={"text-gray-50 px-2 lg:hidden"}><EditSvg width={40}/></div>
+                </div>)}
+            </div>
+        </div>
+
+        </div>
+        <div className={"flex justify-end p-4 mb-6"}>
+            <Button onClick={() => {
+                setValue(defaultValue)
+                insertTable("HardwareSet", value)
+            }}>
+                Добавить
+            </Button>
+        </div>
+
+        <Modal show={openModal} size="3xl" onClose={() => setOpenModal(false)}>
+            <ModalHeader>{article}</ModalHeader>
+            <ModalBody>
+                {data.filter((sh)=>sh.name?.match(new RegExp(search, "gi"))).filter((f)=>f.id === id).map((el) => <div key={el.id + "set"} className={"pt-3 border-b-2 border-gray-500 gap-2"}>
                     <div className={"w-full"}>
                         <div className={"text-center"}>
                             <TextInput color={"myColor"} onChange={(e) => {
@@ -175,18 +270,19 @@ export default function SetForm() {
                         </div>
 
                     </div>
-                </div>)}
-            </div>
-        </div>
 
-        </div>
-        <div className={"flex justify-end p-4"}>
-            <Button onClick={() => {
-                setValue(defaultValue)
-                insertTable("HardwareSet", value)
-            }}>
-                Добавить
-            </Button>
-        </div>
+                </div>)}
+            </ModalBody>
+            <ModalFooter>
+                <div className={"flex justify-end p-2 w-full cursor-pointer"}>
+                    <div className={"w-[100px]"}>
+                        <Button onClick={() => {setOpenModal(false) }}>
+                            Закрыть
+                        </Button>
+                    </div>
+
+                </div>
+            </ModalFooter>
+        </Modal>
     </div>
 }

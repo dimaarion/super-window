@@ -11,6 +11,7 @@ import DragGuide from "./DragGuide.jsx";
 import ImpostView from "./ImpostView.jsx";
 import StulpSash from "./StulpSash.jsx";
 import {setStulpOpenConfig} from "../features/shtulpWindows.js";
+import windows from "../features/windows.js";
 
 /**
  * WindowView - Компонент динамического чертежа окна.
@@ -250,7 +251,8 @@ export default function WindowView({
         <div className="w-full flex flex-col items-center p-4">
             <svg
                 id={"window-project"}
-                className="w-full max-h-[700px] overflow-visible"
+                style={{height:window.innerHeight - 200 + "px"}}
+                className={`w-full overflow-visible`}
                 viewBox={`0 0 ${fullW + 200} ${fullH + 200}`}
                 fill="none" xmlns="http://www.w3.org/2000/svg"
             >

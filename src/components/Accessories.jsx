@@ -58,8 +58,8 @@ export default function Accessories() {
         new Map(list.map(el => [el.category, el])).values()
     );
     return <>
-        <div className={"flex justify-between text-white mb-6 pt-6"}>
-            <div className={"w-1/2 mx-4 shadow-2xl"}>
+        <div className={"lg:flex justify-between text-white mb-6 pt-6"}>
+            <div className={"w-full lg:w-1/2 px-4 shadow-2xl"}>
                 <div className={"flex justify-between bg-gray-700"}>
                     <div>
                         <h2 className={"text-center p-2"}>Категории комплектующих</h2>
@@ -115,7 +115,7 @@ export default function Accessories() {
                     </div>)}
                 </div>
             </div>
-            <div className={"w-full"}>
+            <div className={"w-full px-4"}>
                 <div className={"flex justify-start bg-gray-900 gap-2"}>
                     <div className={"text-start flex w-1/2 self-center"}>
                         <h1 className={"p-2 flex self-center"}>Список комплектующих</h1>
@@ -216,7 +216,7 @@ export default function Accessories() {
 
                 </div>
             </div>
-            <div className={"w-1/2 mx-4 shadow-2xl"}>
+            <div className={"w-full lg:w-1/2 px-4 shadow-2xl"}>
                 <div className={"flex justify-between bg-gray-700"}>
                     <div>
                         <h2 className={"text-center p-2"}>Детали компонента</h2>

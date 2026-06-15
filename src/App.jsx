@@ -1,5 +1,5 @@
 import './App.css'
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {createBase} from "./action/index.js";
 import Home from "./components/Home.jsx";
@@ -11,6 +11,9 @@ import SetForm from "./components/SetForm.jsx";
 import {createTheme, ThemeProvider} from "flowbite-react";
 import ColorForm from "./components/ColorForm.jsx";
 import {NAMEDB} from "./action/index.js";
+import TopPanel from "./components/TopPanel.jsx";
+import Loading from "./components/Loading.jsx";
+import {setPageList} from "./features/pageList.js";
 
 
 //await deleteDatabase()
@@ -19,9 +22,11 @@ await createBase()
 
 function App() {
     const page = useSelector(state => state.page.value);
-
+    const [menu, setMenu] = useState(true);
 
     const dispatch = useDispatch()
+
+
     useEffect(() => {
 
 ///insertTable("Colors",{name:"Белый",color: "#ffffff"});
@@ -151,14 +156,29 @@ function App() {
             <ThemeProvider theme={customTheme}>
                 <header className={"flex justify-center h-[60px] text-white px-4 bg-gray-950 shadow-md"}>
                     <nav className={"flex justify-between w-full gap-2"}>
-                        <div className={"w-full hidden lg:block"}>
-
+                        <div className={"w-full flex sm:hidden lg:block"}>
+                            <div className={"sm:hidden flex"}>
+                                <div onClick={()=>{
+                                    setMenu(!menu)
+                                }} className={"w-[60px] cursor-pointer"}>
+                                   <div>
+                                       <svg transform={`rotate(${menu?0:90} 0 0)`}  xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor"
+                                             className="bi bi-list" viewBox="0 0 16 16">
+                                           <path fillRule="evenodd"
+                                                 d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                                       </svg>
+                                   </div>
+                                </div>
+                                <div>
+                                    <TopPanel/>
+                                </div>
+                            </div>
                         </div>
-
-                        <div className={"sm:flex gap-2 hidden sm:visible justify-between w-full"}>
+                        <div className={menu?"sm:flex gap-2 hidden sm:visible justify-between w-full":"absolute z-50 bg-gray-800 p-4 top-20 sm:hidden"}>
                             {navigation.map((el) => <div key={el} onClick={() => {
                                 dispatch(setPage(el))
-                            }} className={`flex self-center hover:underline cursor-pointer hover:text-blue-400 ${page === el ? 'underline text-blue-400' : ''}`} >
+                                dispatch(setPageList(""))
+                            }} className={`flex self-center hover:underline cursor-pointer mb-2 hover:text-blue-400 ${page === el ? 'underline text-blue-400' : ''}`} >
                                 {el}
                             </div>)}
                         </div>
@@ -166,11 +186,10 @@ function App() {
 
                         </div>
                     </nav>
-
-
                 </header>
                 <article className={"bg-gray-800 flex justify-center"}>
                     <div className={"container justify-center"}>
+
                         {page === "Главная" ? <div className={"flex justify-center gap-8 w-full"}><Home/></div> : ""}
                         {page === "Комплектующие" ? <Accessories/> : ""}
                         {page === "Фурнитура" ? <HardwareForm/> : ""}
