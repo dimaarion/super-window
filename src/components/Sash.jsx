@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {setWindowSash} from "../features/windows.js";
+import {setWindowGlass, setWindowSash} from "../features/windows.js";
 import {useEffect} from "react";
 
 const Sash = ({
@@ -37,6 +37,7 @@ const Sash = ({
     const handleY = sy + sh / 2;
     useEffect(() => {
         dispatch(setWindowSash({id:id,width:sw,height:sh}))
+        dispatch(setWindowGlass({id:id,width:Math.max(0, sw - (sashWidth * 2)),height:Math.max(0, sh - (sashWidth * 2))}))
 
     }, [sashWidth, sw, sh, dispatch,tree,id,sy,sx]);
 
@@ -54,7 +55,7 @@ const Sash = ({
             {/* СТЕКЛОПАКЕТ */}
             <rect
                 x={sx + sashWidth} y={sy + sashWidth}
-                width={Math.max(0, sw - (sashWidth * 2))} height={ Math.max(0, sh - (sashWidth * 2))}
+                width={Math.max(0, sw - (sashWidth * 2))} height={Math.max(0, sh - (sashWidth * 2))}
                 fill="#7DD3FC" fillOpacity="1" stroke="#94A3B8" strokeWidth="0.5"
             />
 

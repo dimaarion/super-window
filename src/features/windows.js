@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import {createSlice} from '@reduxjs/toolkit'
 
 export const windows = createSlice({
     name:"windows",
@@ -22,6 +22,10 @@ export const windows = createSlice({
             sashPrice:0,
             impostProfile:[],
             impostPrice:0,
+            should:[],
+            totalPrice:0,
+            shouldPrice:0,
+            glass:[]
 
 
         },
@@ -70,7 +74,6 @@ export const windows = createSlice({
             state.value.unit = action.payload
         },
         setWindowSash:(state,action)=>{
-         console.log(state.value.sash.filter((el)=>el.id === action.payload.id).length)
             if(state.value.sash.filter((el)=>el.id === action.payload.id).length === 0){
                 state.value.sash = [...state.value.sash,action.payload]
             }else {
@@ -81,11 +84,26 @@ export const windows = createSlice({
                     return el
                 })
             }
-
-
+        },
+        setWindowGlass:(state,action)=>{
+            if(state.value.glass.filter((el)=>el.id === action.payload.id).length === 0){
+                state.value.glass = [...state.value.glass,action.payload]
+            }else {
+                state.value.glass = state.value.glass.map((el)=> {
+                    if(el.id === action.payload.id){
+                        el = action.payload
+                    }
+                    return el
+                })
+            }
         },
         setWindowSashRemove:(state,action)=>{
-            state.value.sash = state.value.sash.filter((el)=> el.id !== action.payload)
+            if(action.payload === "remove"){
+                state.value.sash = [];
+            }else {
+                state.value.sash = state.value.sash.filter((el)=> el.id !== action.payload)
+            }
+
         },
         setWindowSashPrice:(state,action)=>{
             state.value.sashPrice = parseInt(action.payload)
@@ -98,8 +116,30 @@ export const windows = createSlice({
             state.value.impostProfile = [...new Map(items.map(item => [item.id, item])).values()];
         },
         setWindowImpostProfileRemove:(state,action)=>{
-            const items = state.value.impostProfile.filter((el)=> el.id !== action.payload)
-            state.value.impostProfile = [...new Map(items.map(item => [item.id, item])).values()];
+            if(action.payload === "remove"){
+                state.value.impostProfile = [];
+            }else {
+                const items = state.value.impostProfile.filter((el)=> el.id !== action.payload)
+                state.value.impostProfile = [...new Map(items.map(item => [item.id, item])).values()];
+            }
+
+        },
+        setWindowShould:(state,action)=>{
+            const items = [...state.value.should, action.payload];
+            state.value.should = [...new Map(items.map(item => [item.id, item])).values()];
+        },
+        setWindowShouldRemove:(state,action)=>{
+            if(action.payload === "remove"){
+                state.value.should = [];
+            }else {
+                state.value.should = state.value.should.filter((el)=> el.id !== action.payload)
+            }
+        },
+        setWindowTotal:(state,action)=>{
+            state.value.totalPrice = action.payload
+        },
+        setWindowShouldPrice:(state,action)=>{
+            state.value.shouldPrice = action.payload
         }
     }
 
@@ -124,7 +164,12 @@ export const {
     setWindowImpostProfile,
     setWindowSashRemove,
     setWindowImpostProfileRemove,
-    setWindowImpostPrice
+    setWindowImpostPrice,
+    setWindowShould,
+    setWindowShouldPrice,
+    setWindowShouldRemove,
+    setWindowTotal,
+    setWindowGlass
 
 } = windows.actions
 

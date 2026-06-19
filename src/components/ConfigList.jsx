@@ -455,6 +455,7 @@ export default function ConfigList() {
                             <div className={"flex"}>
                                 <Button onClick={() => {
                                     removeSash()
+                                    dispatch(setWindowSashRemove(glassId))
                                 }}>
                                     Удалить
                                 </Button>

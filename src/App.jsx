@@ -12,7 +12,6 @@ import {createTheme, ThemeProvider} from "flowbite-react";
 import ColorForm from "./components/ColorForm.jsx";
 import {NAMEDB} from "./action/index.js";
 import TopPanel from "./components/TopPanel.jsx";
-import Loading from "./components/Loading.jsx";
 import {setPageList} from "./features/pageList.js";
 
 
@@ -154,7 +153,34 @@ function App() {
     return (
         <>
             <ThemeProvider theme={customTheme}>
+                <div className={"bg-gray-900 pl-4"}>
+                    <svg width="50" height="50" viewBox="-100 -100 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="translate(5 5)">
+                            {/* Первый квадрат (вращается с 0° до 90°) */}
+                            <g transform={`translate(0 215) rotate(${0} 208 -8)`}>
+                                <rect width="200" height="200" fill="#7DD3FC" />
+                                <rect  opacity={0.9} width="200" height="200" fill="none" strokeWidth={10} stroke="#fff" />
+                            </g>
+
+
+                            {/*Второй квадрат (вращается, пока общий шаг идет от 90° до 180°)*/}
+                            <g  transform={`translate(215 0) rotate(${0} -8 208)`}>
+                                <rect width="200" height="200" fill="#7DD3FC" />
+                                <rect  opacity={0.9} width="200" height="200" fill="none" strokeWidth={10} stroke="#fff" />
+                            </g>
+
+
+                            {/* Третий квадрат (вращается, пока общий шаг идет от 180° до 270°)*/}
+                            <g transform={`translate(215 215) rotate(${0} -8 -8)`}>
+                                <rect width="200" height="200" fill="#7DD3FC" />
+                                <rect  opacity={0.9} width="200" height="200" fill="none" strokeWidth={10} stroke="#fff" />
+                            </g>
+
+                        </g>
+                    </svg>
+                </div>
                 <header className={"flex justify-center h-[60px] text-white px-4 bg-gray-950 shadow-md"}>
+
                     <nav className={"flex justify-between w-full gap-2"}>
                         <div className={"w-full flex sm:hidden lg:block"}>
                             <div className={"sm:hidden flex"}>
@@ -185,6 +211,7 @@ function App() {
                         <div className={"w-full hidden lg:block"}>
 
                         </div>
+
                     </nav>
                 </header>
                 <article className={"bg-gray-800 flex justify-center"}>

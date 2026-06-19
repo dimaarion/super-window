@@ -2,6 +2,8 @@ import {setGlassId} from "../features/glassId.js";
 import {setConfigListOpen} from "../features/configListOpen.js";
 import {useDispatch} from "react-redux";
 import {setStulpOpenConfig} from "../features/shtulpWindows.js";
+import {setWindowGlass, setWindowSash, setWindowShould} from "../features/windows.js";
+import {useEffect} from "react";
 
 /**
  * StulpSash - Компонент двух штульповых створок.
@@ -19,7 +21,8 @@ export default function StulpSash({
                                       activeSide = "left", // Какая створка активная: 'left' или 'right'
                                       activeDir = "turn",  // Тип открывания активной створки: 'turn' (поворотное), 'tiltTurn' (поворотно-откидное)
                                       passiveDir = "turn", // Тип открывания пассивной створки: обычно 'turn' (только поворотное)
-                                      id
+                                      id,
+                                      hp = 0
                                   }) {
     const dispatch = useDispatch()
 
@@ -101,11 +104,30 @@ export default function StulpSash({
         ));
     };
 
+    useEffect(() => {
+        dispatch(setWindowSash({id:id,width:Math.max(0, leftSash.w - hp * 2) + Math.max(0, rightSash.w - hp * 2),height:Math.max(0, leftSash.h - hp * 2) + Math.max(0,rightSash.h - hp * 2)}))
+        dispatch(setWindowGlass({id:id,width:Math.max(0, leftSash.w - sashWidth * 2) + Math.max(0, rightSash.w - sashWidth * 2),height:Math.max(0, leftSash.h - sashWidth * 2) + Math.max(0, rightSash.h - sashWidth * 2)}))
+        dispatch(setWindowShould({id:id,
+            width:stulpWidth,height:stulpH - hp * 2,
+            sash:{
+                left:{
+                    width:Math.max(0, leftSash.w - hp * 2),
+                    height:Math.max(0, leftSash.h - hp * 2),
+                },
+                right:{
+                    width:Math.max(0,rightSash.w - hp * 2),
+                    height:Math.max(0,rightSash.h - hp * 2),
+                },
+            }
+        }))
+    }, [id,dispatch,stulpWidth,stulpH,leftSash.h,leftSash.w,rightSash.h,rightSash.w,h,overlap,sashWidth,hp]);
+
     return (
         <g onClick={()=>{
             dispatch(setGlassId(id))
             dispatch(setConfigListOpen(true))
             dispatch(setStulpOpenConfig(true))
+
         }} className="stulp-sash-group">
             {/* --- ЛЕВАЯ СТВОРКА --- */}
             <g>
@@ -114,6 +136,7 @@ export default function StulpSash({
                     x={leftSash.x} y={leftSash.y} width={leftSash.w} height={leftSash.h}
                     fill={color} stroke="#000" strokeWidth="1.5"
                 />
+
 
                 {/* Внутреннее заполнение (стеклопакет створки) */}
                 <rect

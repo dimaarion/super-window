@@ -6,7 +6,13 @@ import WindowBuilder from "./WindowBuilder.jsx";
 import {useEffect, useMemo, useState} from "react";
 import {whereId} from "../action/index.js";
 import TopPanel from "./TopPanel.jsx";
-import {setWindowFramePrice, setWindowImpostPrice, setWindowSashPrice, setWindowUnit} from "../features/windows.js";
+import {
+    setWindowFramePrice,
+    setWindowImpostPrice,
+    setWindowSashPrice, setWindowShouldPrice,
+    setWindowTotal,
+    setWindowUnit
+} from "../features/windows.js";
 import Loading from "./Loading.jsx";
 
 
@@ -20,10 +26,8 @@ export default function CreateProject() {
     const impostOpen = useSelector(state => state.impostConfigOpen.value);
     const frameId = useSelector(state => state.frameId.value);
     const sashId = useSelector((state) => state.sashId.value);
-    const impostId = useSelector((state) => state.impostId.value);
     const tree = useSelector(state => state.tree.value);
-    const node = useSelector(state => state.node.value);
-    const selectSashWidth = useSelector(state => state.sashWidth.value);
+    const shtulpId = useSelector((state) => state.shtulpId.value);
     const [step, setStep] = useState(0);
     const [color, setColor] = useState({
         name: "Белый",
@@ -65,6 +69,14 @@ export default function CreateProject() {
         })
     }, [windows.impostId, color.type, dispatch]);
 
+    useEffect(() => {
+        whereId("Accessories", shtulpId).then((el) => {
+            if (el[0]) {
+                dispatch(setWindowShouldPrice(el[0][color.type]))
+            }
+        })
+    }, [shtulpId, color.type, dispatch]);
+
 
     const frame = useMemo(() => {
         const frameLength = ((windowWidth * 2 + windowHeight * 2) / 1000).toFixed(1);
@@ -92,16 +104,26 @@ export default function CreateProject() {
     }, [windows.impostProfile, windowWidth, windowHeight, profileHeight, windows.impostPrice]);
 
     const sash = useMemo(() => {
-        const sashWidth = windows.sash.reduce((acc, item) => acc + item.width, 0) / 1000;
-        const sashHeight = windows.sash.reduce((acc, item) => acc + item.height, 0) / 1000;
-        const price = ((sashWidth + sashHeight) * 2) * windows.sashPrice;
-        console.log(((sashWidth + sashHeight) * 2).toFixed(2))
-        return {width: ((sashWidth + sashHeight) * 2).toFixed(2), price: price};
+        const sashWidth = windows.sash.reduce((acc, item) => acc + item.width, 0) * 2 / 1000;
+        const sashHeight = windows.sash.reduce((acc, item) => acc + item.height, 0) * 2 / 1000;
+        const price = (sashWidth + sashHeight) * windows.sashPrice;
+        return {width: (sashWidth + sashHeight).toFixed(2), price: price.toFixed(2)};
     }, [windows.sash, windows.sashPrice])
 
+    const should = useMemo(()=>{
+        const width = windows.should.reduce((acc, item) => acc + item.width, 0) / 1000;
+        const height = windows.should.reduce((acc, item) => acc + item.height, 0) / 1000;
+        const price = height * windows.shouldPrice;
+        return {width: width, height: height,price: price.toFixed(2)};
+    },[windows.should, windows.shouldPrice])
+
     useEffect(() => {
-        console.log(tree)
-    }, [tree])
+        console.log(windows.glass)
+    }, [windows.glass]);
+
+    useEffect(() => {
+        dispatch(setWindowTotal((parseFloat(frame.price) + parseFloat(impost.price) + parseFloat(sash.price)).toFixed(2)))
+    }, [frame.price,impost.price,sash.price,dispatch])
 
     useEffect(() => {
         const interval = setTimeout(() => {
@@ -109,11 +131,6 @@ export default function CreateProject() {
         }, 1500)
         return () => clearInterval(interval)
     }, [])
-
-    useEffect(() => {
-     //   dispatch(setTree(tree))
-    }, [tree, fullScreen,dispatch])
-
     return <>
         {fullScreen?<div className={"w-1/2 justify-center hidden lg:flex"}>
             <WindowBuilder/>
@@ -148,8 +165,8 @@ export default function CreateProject() {
                 className={"w-full relative z-20 mt-6 ml-4 flex justify-center bg-gray-800 shadow-xl shadow-gray-950 text-xl text-gray-50"}>
                 <div className={"w-full"}>
                     <div className={"p-4 bg-gray-700 w-full"}>Спецификации</div>
-                    <div className={"flex-wrap justify-between border-b-2 border-gray-500"}>
-                        <div className={"flex gap-4 text-lg text-start p-2"}>
+                    <div className={"flex-wrap justify-between"}>
+                        <div className={"flex gap-4 text-lg text-start p-2 border-b-2 border-gray-500"}>
                             <div className={"w-[80px]"}>Рама:</div>
                             <div>
                                 <div>Длина:</div>
@@ -163,7 +180,7 @@ export default function CreateProject() {
                             </div>
 
                         </div>
-                        <div className={"flex gap-4 text-lg text-start p-2"}>
+                        {windows.sash.length > 0?<div className={"flex gap-4 text-lg text-start p-2 border-b-2 border-gray-500"}>
                             <div className={"w-[80px]"}>Створка:</div>
                             <div>
                                 <div>Длина:</div>
@@ -175,8 +192,8 @@ export default function CreateProject() {
                                 <div> {windows.sashPrice}</div>
                                 <div>{sash.price}</div>
                             </div>
-                        </div>
-                        <div className={"flex gap-4 text-lg text-start p-2"}>
+                        </div>:""}
+                        {windows.impostProfile.length > 0?<div className={"flex gap-4 text-lg text-start p-2 border-b-2 border-gray-500"}>
                             <div className={"w-[80px]"}>Импост:</div>
                             <div>
                                 <div>Длина:</div>
@@ -188,9 +205,27 @@ export default function CreateProject() {
                                 <div> {windows.impostPrice}</div>
                                 <div>{impost.price}</div>
                             </div>
+                        </div>:""}
+                        {windows.should.length > 0?<div className={"flex gap-4 text-lg text-start p-2 border-b-2 border-gray-500"}>
+                            <div className={"w-[80px]"}>Штульп:</div>
+                            <div>
+                                <div>Длина:</div>
+                                <div>Цена:</div>
+                                <div>Стоимость:</div>
+                            </div>
+                            <div>
+                                <div> {should.height} м.</div>
+                                <div> {windows.shouldPrice}</div>
+                                <div>{should.price}</div>
+                            </div>
+                        </div>:""}
+                        <div className={"flex gap-4 text-lg text-start p-2 border-b-2 border-gray-500"}>
+                            <div className={"w-[80px]"}>Итого:</div>
+                            <div>
+                                <div>{windows.totalPrice} р.</div>
+                            </div>
 
                         </div>
-
                     </div>
                 </div>
 

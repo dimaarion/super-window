@@ -32,22 +32,22 @@ export default function Loading() {
                 <g transform="translate(5 5)">
                     {/* Первый квадрат (вращается с 0° до 90°) */}
                     <g transform={`translate(0 215) rotate(${count3} 208 -8)`}>
-                        <rect width="200" height="200" fill="#BAFFF6" />
-                        <rect  opacity={0.9} width="200" height="200" fill="none" strokeWidth={10} stroke="#22BFBF" />
+                        <rect width="200" height="200" fill="#7DD3FC" />
+                        <rect  opacity={0.9} width="200" height="200" fill="none" strokeWidth={10} stroke="#fff" />
                     </g>
 
 
                      {/*Второй квадрат (вращается, пока общий шаг идет от 90° до 180°)*/}
                     <g  transform={`translate(215 0) rotate(${count} -8 208)`}>
-                        <rect width="200" height="200" fill="#BAFFF6" />
-                        <rect  opacity={0.9} width="200" height="200" fill="none" strokeWidth={10} stroke="#22BFBF" />
+                        <rect width="200" height="200" fill="#7DD3FC" />
+                        <rect  opacity={0.9} width="200" height="200" fill="none" strokeWidth={10} stroke="#fff" />
                     </g>
 
 
                     {/* Третий квадрат (вращается, пока общий шаг идет от 180° до 270°)*/}
                     <g transform={`translate(215 215) rotate(${count2} -8 -8)`}>
-                        <rect width="200" height="200" fill="#BAFFF6" />
-                        <rect  opacity={0.9} width="200" height="200" fill="none" strokeWidth={10} stroke="#22BFBF" />
+                        <rect width="200" height="200" fill="#7DD3FC" />
+                        <rect  opacity={0.9} width="200" height="200" fill="none" strokeWidth={10} stroke="#fff" />
                     </g>
 
                 </g>

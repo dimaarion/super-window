@@ -156,6 +156,7 @@ export default function WindowView({
                                     activeDir={node.activeDir || "tiltTurn"} // 'turn' или 'tiltTurn'
                                     passiveDir={node.passiveDir || "turn"}
                                     id={node.id}
+                                    hp={hp}
                                 />
                             ):(
                                 <Sash
@@ -251,8 +252,7 @@ export default function WindowView({
         <div className="w-full flex flex-col items-center p-4">
             <svg
                 id={"window-project"}
-                style={{height:window.innerHeight - 200 + "px"}}
-                className={`w-full overflow-visible`}
+                className={`w-full overflow-visible mt-20`}
                 viewBox={`0 0 ${fullW + 200} ${fullH + 200}`}
                 fill="none" xmlns="http://www.w3.org/2000/svg"
             >
@@ -360,7 +360,6 @@ export default function WindowView({
                         hp={hp}
                     />
                 )}
-
             </svg>
         </div>
     );
